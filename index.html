@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pilot ULM România — Pregătire Examen</title>
+<style>
+:root {
+  --bg: #f5f7fb; --card: #fff; --text: #111; --muted: #666;
+  --border: #e0e0e0; --accent: #1565C0; --accent2: #1976D2;
+  --green: #2E7D32; --red: #C62828; --purple: #6A1B9A;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+  --radius: 14px; --radius-sm: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212; --card: #1e1e1e; --text: #f0f0f0; --muted: #999;
+    --border: #333; --accent: #82B1FF; --accent2: #448AFF;
+    --shadow: 0 2px 12px rgba(0,0,0,.3);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── HEADER ── */
+.header { background: var(--accent); color: #fff; padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.header-back { font-size: 22px; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+  background: rgba(255,255,255,.15); border: none; color: #fff; }
+.header-title { font-size: 17px; font-weight: 700; flex: 1; }
+.header-action { font-size: 13px; font-weight: 600; background: rgba(255,255,255,.2);
+  border: none; color: #fff; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
+
+/* ── CONTAINERS ── */
+.container { max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
+.scroll-container { max-height: calc(100vh - 64px); overflow-y: auto; }
+
+/* ── HOME ── */
+.hero { background: linear-gradient(135deg, #1a1a2e 0%, #1565C0 100%);
+  color: #fff; padding: 40px 20px; text-align: center; }
+.hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 6px; }
+.hero p { font-size: 14px; opacity: .8; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border); border-radius: var(--radius);
+  overflow: hidden; margin: 16px; box-shadow: var(--shadow); }
+.stat-cell { background: var(--card); padding: 14px 8px; text-align: center; }
+.stat-val { font-size: 22px; font-weight: 800; color: var(--text); }
+.stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; margin-top: 4px; }
+.mode-card { border-radius: var(--radius); padding: 20px 16px; cursor: pointer;
+  transition: transform .15s, box-shadow .15s; box-shadow: var(--shadow); border: none;
+  text-align: left; display: block; width: 100%; }
+.mode-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+.mode-card:active { transform: scale(.97); }
+.mode-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+.mode-label { font-size: 17px; font-weight: 700; color: #fff; display: block; }
+.mode-desc { font-size: 12px; color: rgba(255,255,255,.8); margin-top: 4px; display: block; }
+.disclaimer { margin: 16px; padding: 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--card); }
+.disclaimer p { font-size: 11px; color: var(--muted); line-height: 1.6; text-align: center; }
+
+/* ── CATEGORY LIST ── */
+.section-title { font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.cat-card { background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; transition: background .15s; box-shadow: var(--shadow); }
+.cat-card:hover { background: var(--accent); color: #fff; }
+.cat-card:hover .cat-count { color: rgba(255,255,255,.8); }
+.cat-name { font-size: 15px; font-weight: 600; }
+.cat-count { font-size: 13px; color: var(--muted); }
+.cat-all { background: var(--accent); border-color: var(--accent); }
+.cat-all .cat-name, .cat-all .cat-count { color: #fff; }
+.cat-all .cat-count { color: rgba(255,255,255,.8); }
+
+/* ── QUESTION ── */
+.progress-bar { height: 5px; background: var(--border); border-radius: 3px; margin-bottom: 6px; }
+.progress-fill { height: 5px; background: var(--accent); border-radius: 3px; transition: width .3s; }
+.progress-text { font-size: 12px; color: var(--muted); text-align: right; margin-bottom: 14px; }
+.cat-chip { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 10px; }
+.question-card { background: var(--card); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.question-text { font-size: 16px; line-height: 1.55; font-weight: 500; }
+.answer-btn { width: 100%; border: 1.5px solid var(--border); background: var(--card);
+  border-radius: var(--radius-sm); padding: 13px 14px; margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 10px; cursor: pointer;
+  text-align: left; transition: background .15s, border-color .15s; }
+.answer-btn:hover:not(:disabled) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--card)); }
+.answer-letter { font-size: 15px; font-weight: 700; color: var(--accent);
+  min-width: 22px; flex-shrink: 0; }
+.answer-text { font-size: 14px; line-height: 1.5; color: var(--text); }
+.answer-btn.correct { background: var(--green) !important; border-color: var(--green) !important; }
+.answer-btn.correct .answer-letter,
+.answer-btn.correct .answer-text { color: #fff !important; }
+.answer-btn.wrong { background: var(--red) !important; border-color: var(--red) !important; }
+.answer-btn.wrong .answer-letter,
+.answer-btn.wrong .answer-text { color: #fff !important; }
+.answer-btn.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--card)); }
+.explanation-box { background: color-mix(in srgb, var(--green) 10%, var(--bg));
+  border-radius: var(--radius-sm); padding: 14px; margin: 6px 0 12px; }
+.explanation-box h4 { color: var(--green); font-size: 14px; margin-bottom: 6px; }
+.explanation-box p { font-size: 14px; line-height: 1.6; color: var(--text); }
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 10px; }
+.btn { border: none; border-radius: var(--radius-sm); padding: 13px 20px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s, transform .1s; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+.btn-success { background: var(--green); color: #fff; }
+.btn-danger { background: var(--red); color: #fff; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-full { width: 100%; margin-top: 10px; }
+.btn-sm { padding: 8px 16px; font-size: 13px; }
+
+/* ── TEST DOTS ── */
+.dots-row { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; flex: 1; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background .2s; }
+.dot.active { background: var(--accent); width: 10px; height: 10px; }
+.dot.ok { background: var(--green); }
+.dot.fail { background: var(--red); }
+
+/* ── TEST RESULT ── */
+.score-card { border-radius: 20px; padding: 36px 24px; text-align: center;
+  color: #fff; box-shadow: var(--shadow); margin-bottom: 24px; }
+.score-emoji { font-size: 52px; display: block; margin-bottom: 10px; }
+.score-pct { font-size: 60px; font-weight: 900; line-height: 1; }
+.score-badge { font-size: 20px; font-weight: 800; letter-spacing: 2px; margin-top: 6px; }
+.score-detail { font-size: 15px; opacity: .9; margin-top: 8px; }
+.score-min { font-size: 12px; opacity: .7; margin-top: 4px; }
+.wrong-card { background: var(--card); border-radius: var(--radius); padding: 14px;
+  margin-bottom: 12px; border-left: 4px solid var(--red); box-shadow: var(--shadow); }
+.wrong-q { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+.wrong-label { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+.wrong-ans { font-size: 13px; color: var(--red); margin-bottom: 4px; }
+.correct-ans { font-size: 13px; color: var(--green); font-weight: 600; margin-bottom: 8px; }
+.expl-small { font-size: 12px; color: var(--muted); line-height: 1.6; font-style: italic; }
+
+/* ── FLASHCARD ── */
+.flashcard { min-height: 280px; background: var(--card); border-radius: 20px;
+  padding: 28px 24px; box-shadow: var(--shadow); cursor: pointer;
+  display: flex; flex-direction: column; justify-content: center;
+  transition: transform .2s; margin-bottom: 16px; border: 2px solid var(--border); }
+.flashcard:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.flashcard-hint { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.flashcard-cat { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+.flashcard-text { font-size: 18px; font-weight: 500; line-height: 1.55; }
+.flashcard-answer { font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 14px; }
+.flashcard-expl { font-size: 13px; color: var(--muted); line-height: 1.6;
+  border-top: 1px solid var(--border); padding-top: 12px; margin-top: 8px; }
+.flash-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.flash-counter { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.done-screen { text-align: center; padding: 48px 24px; }
+.done-emoji { font-size: 64px; display: block; margin-bottom: 16px; }
+.done-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.done-sub { font-size: 15px; color: var(--muted); margin-bottom: 24px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .mode-grid { gap: 8px; padding: 0 12px; }
+  .mode-card { padding: 16px 12px; }
+  .mode-icon { font-size: 26px; }
+  .mode-label { font-size: 15px; }
+  .stats-row { margin: 12px; }
+  .stat-val { font-size: 18px; }
+  .score-pct { font-size: 48px; }
+}
+@media (min-width: 768px) {
+  .mode-grid { grid-template-columns: repeat(4, 1fr); }
+  .container { padding: 24px 20px 60px; }
+  .question-text { font-size: 17px; }
+  .answer-text { font-size: 15px; }
+  .flashcard { min-height: 320px; }
+}
+@media (min-width: 1024px) {
+  .hero { padding: 56px 20px; }
+  .hero h1 { font-size: 40px; }
+}
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SCREEN: HOME ═══════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="hero">
+    <h1>✈️ Pilot ULM</h1>
+    <p>România — Pregătire Examen Teoretic</p>
+  </div>
+  <div class="stats-row" id="stats-row">
+    <div class="stat-cell"><div class="stat-val" id="stat-total">—</div><div class="stat-lbl">Întrebări</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-cats">—</div><div class="stat-lbl">Categorii</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-tests">0</div><div class="stat-lbl">Teste</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-best">—</div><div class="stat-lbl">Cel mai bun</div></div>
+  </div>
+  <div class="mode-grid">
+    <button class="mode-card" style="background:#1565C0" onclick="showStudy()">
+      <span class="mode-icon">📖</span>
+      <span class="mode-label">Studiu</span>
+      <span class="mode-desc">Parcurge pe categorii</span>
+    </button>
+    <button class="mode-card" style="background:#2E7D32" onclick="showTest()">
+      <span class="mode-icon">✍️</span>
+      <span class="mode-label">Test Simulat</span>
+      <span class="mode-desc">30 întrebări • 75% minim</span>
+    </button>
+    <button class="mode-card" style="background:#6A1B9A" onclick="showFlashcards()">
+      <span class="mode-icon">🃏</span>
+      <span class="mode-label">Flashcards</span>
+      <span class="mode-desc">Întrebare → flip → răspuns</span>
+    </button>
+    <button class="mode-card" style="background:#C62828" onclick="showMistakes()">
+      <span class="mode-icon">🔁</span>
+      <span class="mode-label">Greșelile Mele</span>
+      <span class="mode-desc" id="mistakes-desc">0 de reiterat</span>
+    </button>
+  </div>
+  <div class="disclaimer">
+    <p>⚠️ Această aplicație nu are nicio legătură cu Aeroclubul României. Autorul nu își asumă nicio responsabilitate privind acuratețea întrebărilor, răspunsurilor sau eventualelor erori. Materialul este destinat exclusiv pregătirii individuale.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN: STUDY ═══════════════════════════════ -->
+<div id="screen-study" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="goHome()">←</button>
+    <span class="header-title" id="study-header-title">Studiu</span>
+  </div>
+  <div class="scroll-container">
+    <div class="container" id="study-cat-list">
+      <div class="section-title">Alege o categorie</div>
+    </div>
+    <div class="container" id="study-question-view" style="display:none">
+      <div class="progress-bar"><div class="progress-fill" id="study-progress"></div></div>
+      <div class="progress-text" id="study-progress-text"></div>
+      <div class="cat-chip" id="study-cat-chip"></div>
+      <div class="question-card"><p class="question-text" id="study-question"></p></div>
+      <div id="study-answers"></div>
+      <div id="study-explanation" class="explanation-box" style="display:none">
+        <h4>💡 Explicație</h4>
+        <p id="study-explanation-text"></p>
+      </div>
+      <div class="nav-row">
+        <button class="btn btn-secondary" id="study-prev" onclick="studyNav(-1)">← Anterior</button>
+        <button class="btn btn-primary" id="study-next" onclick="studyNav(1)">Următor →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN: TEST ═══════════════════════════════ -->
+<div id="screen-test" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="confirmAbortTest()">✕</button>
+    <span class="header-title" id="test-header-title">Test Simulat</span>
+    <span id="test-answered-badge" style="font-size:12px;opacity:.8"></span>
+  </div>
+  <div class="scroll-container">
+    <div class="container">
+      <div class="progress-bar"><div class="progress-fill" id="test-progress"></div></div>
+      <div class="progress-text" id="test-progress-text"></div>
+      <div class="cat-chip" id="test-cat-chip"></div>
+      <div class="question-card"><p class="question-text" id="test-question"></p></div>
+      <div id="test-answers"></div>
+      <button class="btn btn-primary btn-full" id="test-confirm-btn" onclick="testConfirm()" disabled>
+        Confirmă răspunsul
+      </button>
+      <button class="btn btn-primary btn-full" id="test-next-btn" onclick="testNext()" style="display:none">
+        Întrebarea următoare →
+      </button>
+      <div class="nav-row mt-16">
+        <button class="btn btn-secondary btn-sm" id="test-prev-btn" onclick="testNavPrev()">← Anterior</button>
+        <div class="dots-row" id="test-dots"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN: TEST RESULT ═══════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div class="header">
+    <span class="header-title">Rezultat Test</span>
+  </div>
+  <div class="scroll-container">
+    <div class="container">
+      <div class="score-card" id="score-card">
+        <span class="score-emoji" id="score-emoji"></span>
+        <div class="score-pct" id="score-pct"></div>
+        <div class="score-badge" id="score-badge"></div>
+        <div class="score-detail" id="score-detail"></div>
+        <div class="score-min">Minim de trecere: 75%</div>
+      </div>
+      <div class="section-title" id="wrong-section-title"></div>
+      <div id="wrong-list"></div>
+      <button class="btn btn-primary btn-full" onclick="showTest()">🔄 Test nou</button>
+      <button class="btn btn-secondary btn-full" onclick="goHome()">🏠 Acasă</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN: FLASHCARDS ═══════════════════════════════ -->
+<div id="screen-flash" class="screen">
+  <div class="header">
+    <button class="header-back" id="flash-back-btn" onclick="flashBack()">←</button>
+    <span class="header-title" id="flash-header-title">Flashcards</span>
+  </div>
+  <div class="scroll-container">
+    <div class="container" id="flash-cat-list">
+      <div class="section-title">Alege o categorie</div>
+    </div>
+    <div class="container" id="flash-play" style="display:none">
+      <div class="flash-counter" id="flash-counter"></div>
+      <div class="flashcard" id="flashcard" onclick="flipCard()"></div>
+      <div class="flash-actions" id="flash-actions" style="display:none">
+        <button class="btn btn-danger" onclick="flashRepeat()">🔁 Mai repet</button>
+        <button class="btn btn-success" onclick="flashKnow()">✓ Știu</button>
+      </div>
+    </div>
+    <div class="container done-screen" id="flash-done" style="display:none">
+      <span class="done-emoji">🎉</span>
+      <div class="done-title">Ai terminat toate cardurile!</div>
+      <div class="done-sub" id="flash-done-sub"></div>
+      <button class="btn btn-primary btn-full" onclick="flashReset()">🔄 Reia</button>
+      <button class="btn btn-secondary btn-full mt-16" onclick="flashBack()">← Categorii</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN: MISTAKES ═══════════════════════════════ -->
+<div id="screen-mistakes" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="goHome()">←</button>
+    <span class="header-title">Greșelile Mele</span>
+    <button class="header-action" onclick="clearMistakesConfirm()">Șterge tot</button>
+  </div>
+  <div class="scroll-container">
+    <div class="container" id="mistakes-empty" style="display:none">
+      <div class="done-screen">
+        <span class="done-emoji">✅</span>
+        <div class="done-title">Nicio greșeală înregistrată</div>
+        <div class="done-sub">Rezolvă întrebări la Studiu sau Test pentru a-ți urmări greșelile.</div>
+        <button class="btn btn-primary btn-full" onclick="goHome()">← Acasă</button>
+      </div>
+    </div>
+    <div class="container" id="mistakes-view">
+      <div class="progress-bar"><div class="progress-fill" id="mistakes-progress" style="background:var(--red)"></div></div>
+      <div class="progress-text" id="mistakes-progress-text"></div>
+      <div class="cat-chip" id="mistakes-cat-chip"></div>
+      <div class="question-card"><p class="question-text" id="mistakes-question"></p></div>
+      <div id="mistakes-answers"></div>
+      <div id="mistakes-explanation" class="explanation-box" style="display:none">
+        <h4>💡 Explicație</h4>
+        <p id="mistakes-explanation-text"></p>
+      </div>
+      <button class="btn btn-primary btn-full" id="mistakes-next-btn" onclick="mistakesNext()" style="display:none">
+        Următoarea →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════ DATA ═══════════════════════════════
+const QUESTIONS = [{"id":1,"category":"Legislație aeronautică","question":"Care sunt caracteristicile spațiului aerian de clasă C?","answers":["Sunt permise atat zborurile IFR, cat si zborurile VFR, toate zborurile sunt supuse serviciului de \ncontrol al traficului aerian, se esaloneaza numai aeronavele care zboara IFR, intre ele si fata de \ncele care zboara VFR, iar zborurile VFR primesc informatii despre traficul VFR. Spatiul aerian \nClasa C contine toate zonele de control de aerodrom (CTR) specificate in FIR Bucuresti;","Sunt permise zboruri IFR si VFR, se aplica serviciul de dirijare si control al traficului aerian IFR si li \nse asigura esalonare intre ele. Nu sunt obligatorii comunicatiile radio pentru zborurile VFR. Nu este \nobligatorie autorizarea ATC pentru zborurile VFR. Toate zborurile primesc informatii de trafic in \nmasura in care acest lucru este posibil.","Sunt permise zboruri IFR si VFR, este asigurat serviciul consultativ de informatii de trafic, iar la \ncerere, toate aeronavele pot beneficia de serviciul de informare a zborurilor. Nu sunt obligatorii \ncomunicatiile radio pentru zborurile VFR. Nu este obligatorie autorizarea ATC pentru zborurile IFR si \nVFR.","Sunt permise zboruri IFR si VFR si se asigura, la cerere, pentru toate aeronavele serviciul de informare \na zborurilor. Nu sunt obligatorii comunicatiile radio pentru zborurile VFR. Nu este obligatorie \nautorizarea ATC pentru zborurile IFR si VFR. Spatiul aerian Clasa G contine intregul spatiu aerian din \nFIR Bucuresti care nu este desemnat ca avand o alta clasa. In acest spatiu se includ si zonele \nrestrictionate."],"correctIndex":0,"explanation":"Spațiul aerian de clasă C permite atât zborul IFR cât și VFR. Toate aeronavele sunt sub controlul ATC, dar separarea se aplică NUMAI aeronavelor IFR (între ele și față de VFR). Zborurile VFR primesc informații despre traficul VFR. CTR-urile din FIR București sunt de clasă C."},{"id":2,"category":"Legislație aeronautică","question":"Când este obligatoriu să dețineți un certificat de operator radiotelefonist?","answers":["Atunci când operatorul aeronavei desfăşoară activităţi de zbor în clase de spaţiu aerian în care \nlegătura radio este obligatorie","Atunci când se zboară IFR cu aeronave ultrauşoare motorizate","Certificatul este necesar pentru toate zborurile cu aeronave ultrauşoare motorizate","Doar în spaţiul aerian de clasă G"],"correctIndex":0,"explanation":"Certificatul de operator radiotelefonist este obligatoriu numai când pilotul operează în spații aeriene unde comunicația radio este cerută prin reglementări (ex. clasele A și C). În clasa G comunicațiile radio nu sunt obligatorii."},{"id":3,"category":"Legislație aeronautică","question":"Activitatea aeronautică civilă, pe teritoriul și în spațiul aerian național al României, este \nreglementată prin:","answers":["Codul Aerian, actele normative interne în domeniu, precum și în conformitate cu prevederile \nConvenției de la Chicago, alte convenții și acorduri internaționale la care România este parte","Codul aerian și Ediția 2 la RACR-LPAN ULM","HG 912/2010 aplicată în conformitate cu prevederile Convenției de la Chicago și ale altor acorduri \ninternaționale la care România este parte","RACR-RA (Regulile aerului) și actele normative interne în domeniu"],"correctIndex":0,"explanation":"Activitatea aeronautică civilă din România este reglementată de Codul Aerian, actele normative interne și Convenția de la Chicago (1944), la care România este parte. Convenția Chicago stă la baza reglementărilor ICAO aplicabile la nivel internațional."},{"id":4,"category":"Legislație aeronautică","question":"Care sunt clasele de spaţiu aerian din România şi în care dintre acestea este permis zborul VFR ?","answers":["A,C,G / C şi G","A,B,C,G / G","A,C,G / G","A,B,C / B şi C"],"correctIndex":0,"explanation":"România folosește clasele de spațiu aerian A, C și G, conform ICAO. Zborul VFR este permis în clasele C și G. Clasa A permite doar IFR; zborul VFR în clasa A nu este permis."},{"id":5,"category":"Legislație aeronautică","question":"Documentele medicale necesare exercitării privilegiilor oferite de licența de pilot de aeronave \nultraușoare motorizate sunt:","answers":["Certificatul medical Clasa 2/LAPL sau documentul echivalent Anexa numărul 2 la RACR-LPAN ULM","Certificatul medical Clasa 1","Certificatul medical Clasa 2","Anexa numărul 2 la RACR-LPAN ULM"],"correctIndex":0,"explanation":"Piloții de ULM trebuie să dețină certificat medical Clasa 2/LAPL sau documentul echivalent prevăzut în Anexa 2 la RACR-LPAN ULM. Certificatul Clasa 1 este cerut pentru piloții comerciali profesioniști."},{"id":6,"category":"Legislație aeronautică","question":"În caz de pericol de coliziune între două aeronave care rulează pe suprafața de mișcare a unui \naerodrom, se vor aplica următoarele reguli:","answers":["toate variantele de răspuns enumerate sunt corecte","când două aeronave se apropie din faţă, sau aproximativ din faţă, fiecare se va opri sau, în măsura \nposibilului, îşi va modifica drumul spre dreapta sa pentru a trece la o distanţă suficientă una de \ncealaltă","când două aeronave sunt pe traiectorii convergente, cea care o are pe cealaltă în dreapta sa trebuie \nsă dea prioritate","o aeronavă care este depăşită de către o altă aeronavă este obligată să-şi menţină traiectoria, iar \naeronava care depăşeşte trebuie să păstreze o distanţă suficientă faţă de aeronava depăşită"],"correctIndex":0,"explanation":"Pe suprafața de mișcare a aerodromului se aplică toate cele trei reguli simultan: din față → viraj dreapta; traiectoii convergente → cel care are pe celălalt la dreapta cedează; la depășire → cel depășit menține traiectoria."},{"id":7,"category":"Legislație aeronautică","question":"Accesul traficului aerian VFR în interiorul spațiului aerian de clasă C este permis, fără autorizații \nspeciale, aeronavelor care au la bord următoarele echipamente:","answers":["echipamente de radiocomunicație aer-sol în banda de frecvențe foarte înalte (VHF) pentru \nrealizarea comunicației cu unitățile de control al traficului aerian și transponder operațional în \nmod C","echipamente de radiocomunicație aer-sol în banda de frecvențe foarte înalte (VHF) pentru realizarea \ncomunicației cu unitățile de control al traficului aerian și transponder operațional în mod S","echipamente de radiocomunicație aer-sol în banda de frecvențe foarte înalte (VHF) pentru realizarea \ncomunicației cu unitățile de control al traficului aerian, GPS, paraşută balistică şi transponder \noperațional în mod OFF","echipamente de radiocomunicație aer-sol în banda de frecvențe foarte înalte (VHF) pentru realizarea \ncomunicației cu unitățile de control al traficului aerian"],"correctIndex":0,"explanation":"Pentru acces VFR în spațiul aerian de clasă C fără autorizații speciale sunt necesare: radio VHF pentru comunicație cu ATC și transponder în mod C (altitudine)."},{"id":8,"category":"Legislație aeronautică","question":"Conform prevederilor din Codul Aerian al României, certificatul de înmatriculare al aeronavei se \naflă în mod obligatoriu la:","answers":["Bordul aeronavei","Sediul operatorului aerian","Sediul Ministerului Transporturilor","Sediul Autorității de certificare"],"correctIndex":0,"explanation":"Conform Codului Aerian, certificatul de înmatriculare al aeronavei se află în mod obligatoriu la bordul aeronavei pe toată durata zborului."},{"id":9,"category":"Legislație aeronautică","question":"Ce reprezintă o zonă interzisă?","answers":["Un spaţiu aerian de dimensiuni definite, stabilit deasupra zonelor terestre sau apelor teritoriale \nale unui stat, în interiorul căruia nu este permis zborul aeronavelor","Un spaţiu aerian de dimensiuni definite, stabilit deasupra zonelor terestre sau apelor teritoriale ale \nunui stat, în interiorul/cadrul căruia nu este permisă folosirea mijloacelor de radiocomunicații ale \naeronavelor","Un spaţiu aerian de dimensiuni definite, stabilit deasupra zonelor terestre sau apelor teritoriale ale \nunui stat, în interiorul/cadrul căruia se poate zbura dar nu este permisă aterizarea/amerizarea \naeronavelor","Un spaţiu aerian de dimensiuni definite, stabilit deasupra zonelor terestre sau apelor teritoriale ale \nunui stat, în interiorul/cadrul căruia se poate zbura dar nu este permisă fotografierea obiectivelor"],"correctIndex":0,"explanation":"O zonă interzisă (P – Prohibited) este un spațiu aerian de dimensiuni definite în interiorul căruia zborul aeronavelor nu este permis sub nicio formă (ex. zone deasupra centralelor nucleare, palatelor prezidențiale)."},{"id":10,"category":"Legislație aeronautică","question":"Convenția ICAO, semnată în anul 1944, cuprinde un număr de:","answers":["19 anexe","2 anexe","o singură anexă","nu conține anexe"],"correctIndex":0,"explanation":"Convenția de la Chicago (1944), care a creat ICAO, cuprinde în prezent 19 anexe tehnice ce reglementează toate aspectele aviației civile internaționale (navigație aeriană, operațiuni de zbor, personal, etc.)."},{"id":11,"category":"Legislație aeronautică","question":"Ce reprezintă abrevierea aeronautică RACR ?","answers":["Reglementări Aeronautice Civile Române","Reglementările Autorității Civile din România","Regulamentul Aerian Civil Românesc","Regulamentul Autorității Civile din România"],"correctIndex":0,"explanation":"RACR = Reglementări Aeronautice Civile Române – actele normative emise de autoritatea aeronautică română (AACR) pentru reglementarea aviației civile pe teritoriul României."},{"id":12,"category":"Legislație aeronautică","question":"Faza de pericol - DETRESFA - se înștiințează atunci când:","answers":["Toate variantele de răspuns enumerate sunt corecte","în continuarea declanșării fazei de alarmare, alte încercări ulterioare de stabilire, fără succes, a \ncomunicației cu aeronava, precum şi din interogarea altor surse, rămasă fără rezultat, indică \nprobabilitatea ca aeronava să fie în pericol;","se consideră că s-a consumat deja cantitatea de combustibil de la bord a fi consumat sau că aceasta \neste insuficientă spre a permite aeronavei să rămână în siguranţă;","se primeşte o informaţie care indică faptul că a fost afectată operarea eficientă a aeronavei într-o \nmăsură în care devine posibilă o aterizare forţată,"],"correctIndex":0,"explanation":"Faza DETRESFA (pericol) se declară când ORICARE dintre condițiile enumerate este îndeplinită (nu e nevoie de toate simultan): (1) comunicația a eșuat total și alte surse confirmă că aeronava e în pericol; (2) combustibilul este consumat sau insuficient pentru a rămâne în siguranță; (3) există informații că operarea aeronavei a fost grav afectată. Răspunsul corect este 'toate variantele sunt corecte' întrucât fiecare în parte poate declanșa faza DETRESFA."},{"id":13,"category":"Legislație aeronautică","question":"AACR este abrevierea pentru ...","answers":["Autoritatea Aeronautică Civilă Română","Asociația Aviatorilor Civili din România","Autoritatea Aviatorilor Civili din România","Academia Aeronautică Civilă Română"],"correctIndex":0,"explanation":"AACR = Autoritatea Aeronautică Civilă Română – autoritatea de stat care reglementează, certifică și supraveghează activitățile de aviație civilă din România."},{"id":14,"category":"Legislație aeronautică","question":"O zonă de spațiu aerian restricționat reprezintă:","answers":["\"O porţiune de spaţiu aerian de dimensiuni definite, deasupra \nteritoriului sau apelor teritoriale ale unui Stat, în interiorul căruia zborul aeronavelor se poate \nefectua în condiţii specificate.\"","\"Spaţiu aerian controlat care se întinde de la suprafaţa solului în sus \npână la o limită superioară specificată.\"","\"O porţiune de spaţiu aerian de dimensiuni definite în care activităţi \npericuloase zborului aeronavelor pot exista în perioade de timp specificate.\"","O porţiune de spaţiu aerian de dimensiuni definite, deasupra teritoriului sau apelor teritoriale ale \nunui Stat, în interiorul căruia zborul aeronavelor este interzis."],"correctIndex":0,"explanation":"O zonă restricționată (R – Restricted) este o porțiune de spațiu aerian în care zborul este posibil dar numai în condiții specificate (autorizări, ore de activitate, coordonare cu autoritățile militare etc.)."},{"id":15,"category":"Legislație aeronautică","question":"În condiții meteorologice de zbor la vedere, într-o regiune de informare a zborurilor, un pilot de \naeronavă ultraușoară motorizată, vede în fața lui la aproximativ același nivel o altă aeronavă \ncare se îndreaptă direct spre el. Ce manevră trebuie să execute pilotul pentru a evita abordajul \ncu cealaltă aeronavă ?","answers":["Viraj la dreapta","Urcare","Viraj la stânga","Coborâre"],"correctIndex":0,"explanation":"Regula de evitare a coliziunii frontale: AMBELE aeronave efectuează viraj la DREAPTA. Deci pilotul vede aeronava la nivelul lui venind spre el → viraj la dreapta."},{"id":16,"category":"Legislație aeronautică","question":"Deținătorul unei licențe de pilot de aeronave ultraușoare motorizate, atunci când își exercită \nprivilegiile asociate licenței, este obligat să poarte întotdeauna asupra sa:","answers":["Licența de pilot, certificatul medical corespunzător și un act de identificare cu fotografie","Actele de identificare și certificatul de absolvire a cursurilor de pregătire, la sol și zbor, efectuate","Nu există obligații în acest sens pentru deținătorii de licențe naționale de aeronave ultraușoare \nmotorizate","Licența de pilot, carnetul de zbor și certificatul medical corespunzător"],"correctIndex":0,"explanation":"Pilotul de ULM este obligat să poarte întotdeauna: licența de pilot, certificatul medical corespunzător și un act de identitate cu fotografie, atunci când exercită privilegiile licenței."},{"id":17,"category":"Legislație aeronautică","question":"Conform Codului aerian, în România, autoritatea unică în domeniul investigaţiilor şi analizelor \nprivind siguranţa aviaţiei civile la nivel naţional cu atribuţii în organizarea, conducerea, \ncoordonarea, controlul şi efectuarea investigaţiilor privind siguranţa aviaţiei civile, în condiţiile \nlegii şi ale Regulamentului (UE) nr. 996/2010, este:","answers":["Autoritatea de Investigaţii şi Analiză pentru Siguranţa Aviaţiei Civile","Autoritatea Aeronautică Civilă Română","Ministerul Transporturilor și Comunicaţiilor","Aeroclubul României pentru aeronavele ultrauşoare motorizate"],"correctIndex":0,"explanation":"În România, investigarea accidentelor de aviație civilă este atributul exclusiv al Autorității de Investigații și Analiză pentru Siguranța Aviației Civile (AIAS), nu al AACR sau al altor autorități."},{"id":18,"category":"Legislație aeronautică","question":"Conform Codului Aerian, scopul investigaţiei privind siguranţa în aviaţia civilă îl reprezintă:","answers":["prevenirea producerii unor accidente şi incidente şi formularea de recomandări privind siguranţa \nîn aviaţie","sprijinirea Aeroclubului României în activitatea de supraveghere a activităţii de control în domeniul \naeronavelor ultrauşoare motorizate","sprijin în efectuarea cercetării penale","realizarea unor statistici privind accidentele şi incidentele de aviaţie"],"correctIndex":0,"explanation":"Scopul investigației de siguranță este PREVENIREA accidentelor viitoare și emiterea de recomandări de siguranță, NU stabilirea vinovăției sau sancționarea persoanelor implicate."},{"id":19,"category":"Legislație aeronautică","question":"Lansarea de parașutiști din aeronave ultraușoare motorizate:","answers":["Poate fi făcută doar dacă aeronava este autorizată pentru acest tip de activități și pilotul \naeronavei deține calificarea de lansări parașutiști","Este complet interzisă și se pedepsește cu închisoare de la 5 la 10 ani","Este complet interzisă și atrage după sine suspendarea licenței pe o perioadă de timp nedeterminată","Poate fi făcută doar dacă aeronava este neomologată și pilotul acesteia deține calificarea de \ninstructor"],"correctIndex":0,"explanation":"Lansarea de parașutiști din ULM este permisă doar dacă aeronava este autorizată specific pentru această activitate și pilotul deține calificarea de lansări parașutiști."},{"id":20,"category":"Legislație aeronautică","question":"Experiența de zbor a unui pilot, înregistrată în carnetul de zbor, reprezintă suma tuturor timpilor \nbloc ai fiecărui zbor. Cum este definit timpul bloc ?","answers":["timpul scurs din momentul în care o aeronavă se pune în mişcare pentru prima dată din locul de \nparcare în vederea decolării până în momentul în care aceasta se opreşte în poziţia desemnată pentru \nparcare şi are motorul oprit","timpul scurs din momentul în care motorul aeronavei este pornit și până la oprirea acestuia","timpul scurs de la decolarea aeronavei până la momentul în care aeronava a aterizat","timpul scurs de la decolarea aeronavei până la momentul în care motorul aeronavei este oprit"],"correctIndex":0,"explanation":"Timpul bloc (block time) = de la prima mișcare a aeronavei de la locul de parcare (cu intenția de a decola) până la oprirea completă la locul de parcare după aterizare, cu motorul oprit."},{"id":21,"category":"Legislație aeronautică","question":"Pentru zborurile desfășurate după regulile de zbor la vedere, responsabili pentru menținerea \neșalonării între aeronave și obstacolele de la sol:","answers":["În cazul zborurilor care se executa conform regulilor VFR, responsabilitatea evitarii coliziunii \nintre aeronavele in zbor VFR precum si intre acestea si obstacolele de la sol revine pilotilor \ncomandanti de bord","În cazul zborurilor ce se executa conform regulilor VFR, responsabilitatea evitarii coliziunii intre \naeronavele in zbor VFR precum si intre acestea si obstacolele de la sol revine organelor de trafic \naerian","În cazul zborurilor ce se executa conform regulilor VFR, responsabilitatea evitarii coliziunii intre \naeronavele in zbor VFR precum si intre acestea si obstacolele de la sol revine sistemului de evitare \nal coliziunilor TCAS","În cazul zborurilor ce se executa conform regulilor VFR, responsabilitatea evitarii coliziunii intre \naeronavele in zbor VFR precum si intre acestea si obstacolele de la sol revine operatorului aerian"],"correctIndex":0,"explanation":"Pentru zborul VFR, responsabilitatea evitării coliziunilor cu alte aeronave și cu obstacolele de sol revine EXCLUSIV piloților comandanți de bord. ATC nu asigură separarea VFR față de VFR în clasa G."},{"id":22,"category":"Legislație aeronautică","question":"Ce reprezintă o zonă periculoasă?","answers":["Un spaţiu aerian de dimensiuni definite în interiorul căruia se pot desfăşura într-un timp \nspecificat/precizat activităţi periculoase pentru zborul aeronavelor","Spaţiu aerian de dimensiuni definite, deasupra zonelor terestre sau apelor teritoriale ale statului, în \ncadrul căruia zborul aeronavelor este restricţionat potrivit anumitor condiţii specificate","Un spaţiu aerian de dimensiuni definite în interiorul căruia se află obstacole înalte și nesemnalizate \ncorespunzător, periculoase pentru zborul aeronavelor","Un spaţiu aerian de dimensiuni definite în interiorul căruia fenomenele meteo sunt periculoase pentru \nzborul aeronavelor"],"correctIndex":0,"explanation":"O zonă periculoasă (D – Dangerous) este un spațiu aerian în care, în anumite perioade de timp, se desfășoară activități periculoase pentru zbor (exerciții militare, trageri de artilerie, activitate parașutism etc.)."},{"id":23,"category":"Legislație aeronautică","question":"Aeronavele care execută zboruri VFR, nu vor decola sau ateriza pe un aerodrom situat într-o \nzonă de control de aerodrom dacă vizibilitatea la sol este mai mică de:","answers":["5 kilometri","2 kilometri","10 kilometri","3 kilometri"],"correctIndex":0,"explanation":"Aeronavele VFR nu pot decola sau ateriza pe un aerodrom din zona de control de aerodrom (CTR) dacă vizibilitatea la sol este sub 5 km. Această regulă asigură o marjă de siguranță pentru vizualizarea pistei și a traficului."},{"id":24,"category":"Legislație aeronautică","question":"Conform Codului Aerian, toate persoanele fizice și juridice au obligația:\n1. să nu împiedice activitatea de investigație privind siguranța;\n2. să pună la dispoziția acestora toate înregistrările, informațiile și documentele relevante ce privesc respectiva investigație;\n3. nu sunt obligate să furnizeze informațiile decât organelor de cercetare penală.\nCare dintre afirmațiile de mai sus reprezintă obligații legale?","answers":["1. + 2.","1.","2. + 3.","3."],"correctIndex":0,"explanation":"Codul Aerian impune două obligații clare: (1) să nu împiedice investigația de siguranță și (2) să pună la dispoziție toate înregistrările, informațiile și documentele relevante. Afirmația (3) nu reprezintă o obligație — persoanele NU sunt obligate să furnizeze informații exclusiv organelor de cercetare penală; investigațiile de siguranță aeronautică sunt independente de investigațiile penale și au scopuri diferite (prevenirea accidentelor, nu stabilirea vinovăției)."},{"id":25,"category":"Legislație aeronautică","question":"Ce categorii de zboruri se pot desfășura în spațiul aerian de clasă G ?","answers":["IFR și VFR și se furnizează serviciul de informare a zborurilor tuturor aeronavelor care solicită \nacest lucru","VFR, se furnizează serviciul consultativ de trafic aerian","IFR și VFR, se furnizează serviciul de control al traficului aerian tuturor aeronavelor iar acestea sunt \ntoate eșalonate, fiecare față de celelalte","IFR, se furnizează serviciul consultativ de trafic aerian"],"correctIndex":0,"explanation":"Spațiul aerian de clasă G (necontrolat) permite atât IFR cât și VFR. Se furnizează serviciul de informare a zborurilor (FIS) celor care solicită, dar nu există control ATC și nu se aplică separarea aeronavelor."},{"id":26,"category":"Cunoașterea aeronavei","question":"Care dintre următoarele tipuri de motoare este predispus la un incendiu al carburatorului?","answers":["Motoarele cu piston","Motoarele cu turbină","Motoarele electrice","Motoarele turbopropulsoare"],"correctIndex":0,"explanation":"Motoarele cu piston (combustie internă) sunt predispuse la incendiu al carburatorului datorită vaporilor de combustibil și temperaturii ridicate în zona carburatorului. Motoarele cu turbină și cele electrice nu au carburator."},{"id":29,"category":"Cunoașterea aeronavei","question":"Cum se va mișca fiecare piston în timpul unui ciclu complet al unui motor cu combustie internă \nîn 4 timpi?","answers":["De două ori în sus și de două ori în jos","O dată în sus și o dată în jos","De trei ori în sus și de trei ori în jos","De patru ori în sus și de patru ori în jos"],"correctIndex":0,"explanation":"Într-un ciclu complet al motorului în 4 timpi, pistonul efectuează 2 curse în sus (compresie și evacuare) și 2 curse în jos (admisie și putere). Total = 4 curse = 2 rotații complete ale arborelui cotit."},{"id":30,"category":"Cunoașterea aeronavei","question":"Care dintre următoarele afirmații este falsă ?","answers":["În timpul zborului, pala avansată și pala recurentă au aceeași viteză față de fileurile de aer","Turația rotorului variază în funcție de viteză și de încărcarea aeronavei","Pala avansată are viteza unghiulară egală cu viteza palei recurente","Unghiul de atac al palei rotorului în raport cu fileurile de aer este între 2 și 3 grade, în funcție de \nprofilul palei, pentru a putea efectua autorotație"],"correctIndex":0,"explanation":"Această afirmație este FALSĂ: pala avansantă are viteză față de aer MAI MARE decât pala recurentă (viteza de rotație + viteza de înaintare vs. viteza de rotație - viteza de înaintare). Aceasta cauzează disimetria portanței."},{"id":31,"category":"Cunoașterea aeronavei","question":"Turbulența de siaj este cauza …","answers":["Tendinței de egalizare a presiunii la capetele unui profil aerodinamic","Păstrării unei distanțe insuficiente față de alte aeronave în zbor","Zborului la altitudini foarte mari","Suflul generat de elicea aeronavei"],"correctIndex":0,"explanation":"Turbulența de siaj se formează datorită tendinței de egalizare a presiunii la capetele (vârfurile) profilului aerodinamic: aerul de sub aripă (presiune înaltă) tinde să circule spre extradosul aripii (presiune joasă), creând vârtejuri."},{"id":32,"category":"Cunoașterea aeronavei","question":"La ce reacționează capsula manometrică a vitezometrului (ASI - airspeed indicator) unei \naeronave ?","answers":["La presiunea dinamică a aerului, respectiv diferența dintre presiunea totală și presiunea statică","La temperatura ambientală","La presiunea statică a aerului","La presiunea totală a aerului"],"correctIndex":0,"explanation":"Vitezometrul (ASI) reacționează la presiunea dinamică a aerului = diferența dintre presiunea totală (Pitot) și presiunea statică. Presiunea dinamică este proporțională cu viteza² față de aer (½ρv²)."},{"id":33,"category":"Cunoașterea aeronavei","question":"Dacă ambele magnetouri cedează în timpul zborului:","answers":["Se oprește motorul","Motorul în 4 timpi va continua să funcționeze datorită autoaprinderii combustibilului","Dacă bateria nu este încărcată se oprește motorul","Bujiile vor primi curentul necesar generării scânteii de la baterie"],"correctIndex":0,"explanation":"Magnetourile sunt generatoare independente de curent electric care alimentează bujiile. Dacă ambele magnetouri cedează, curentul pentru scânteie dispare și motorul se oprește. Nu există sursă alternativă pentru aprindere."},{"id":34,"category":"Cunoașterea aeronavei","question":"Când citim un vitezometru, acesta ne arată ce viteză a aeronavei ?","answers":["IAS - viteza indicată","GS - viteza față de sol","TAS - viteza adevărată","CAS - viteza calibrată"],"correctIndex":0,"explanation":"Vitezometrul (ASI – Airspeed Indicator) afișează întotdeauna IAS (Indicated Airspeed) – viteza indicată. Aceasta nu ține cont de erori instrumentale, de compresibilitate sau de densitatea aerului."},{"id":36,"category":"Cunoașterea aeronavei","question":"Dacă circuitul de punere la masă dintre magnetouri și comutatorul de operare al acestora este \nîntrerupt, motorul:","answers":["Nu poate fi oprit prin selectarea poziției OFF","Nu poate opera pe magnetoul stâng","Nu poate fi pornit prin selectarea poziției ON","Nu poate opera pe magnetoul drept"],"correctIndex":0,"explanation":"Dacă circuitul de masă (ground circuit) dintre magnetouri și comutator este întrerupt, magnetourile funcționează PERMANENT – pilotul nu mai poate pune la masă magnetourile pentru a opri motorul. Motorul nu poate fi oprit normal."},{"id":38,"category":"Cunoașterea aeronavei","question":"Elementele principale care formează structura unei aripi sunt:","answers":["Lonjeroane, nervuri și lise","Două lonjeroane paralele, unul la bordul de atac și unul la bordul de fugă","Nervuri și lise","Doar nervuri pentru a obține o construcție simplă, astfel fiind reduse costurile"],"correctIndex":0,"explanation":"Aripa convențională este construită din lonjeroane (structuri portante principale longitudinale), nervuri (profilul transversal) și lise (panouri de acoperire)."},{"id":41,"category":"Cunoașterea aeronavei","question":"Un litrometru:","answers":["Indică cu acuratețe cantitatea de combustibil din rezervoare doar atunci când aeronava se află \nîn poziție orizontală","Este calibrat să arate cu exactitate cantitatea de carburant în orice stadiu al zborului","Este calibrat să ofere cea mai mare acuratețe atunci când cantitatea de combustibil este mică","Indică cu acuratețe cantitatea de combustibil din rezervoare doar atunci când rezervoarele sunt pline"],"correctIndex":0,"explanation":"Litrometrul (indicatorul de combustibil) al aeronavelor ULM este etalonat să afișeze corect cantitatea de combustibil numai când aeronava este în poziție orizontală (pe sol sau în zbor orizontal). Atitudinile cabrate/picat falsifică indicația."},{"id":42,"category":"Cunoașterea aeronavei","question":"Dacă elicea nu este echilibrată …","answers":["Toate variantele enumerate sunt corecte","Există riscul distrugerii reductorului","Zgomotul crește","Cresc vibrațiile"],"correctIndex":0,"explanation":"O elice dezechilibrată generează TOATE efectele negative: distruge reductorul (forțe centrifuge asimetrice), crește zgomotul și crește vibrațiile motorului și celulei."},{"id":43,"category":"Cunoașterea aeronavei","question":"Motorul nu pornește. După verificarea bujiilor se constată că acestea au capătul maroniu deschis. \nÎnseamnă că …","answers":["Bujiile nu cauzează problemele motorului","Bujiile sunt prea vechi și trebuie schimbate","Amestecul combustibil este prea bogat, cauzând înecarea motorului","Amestecul combustibil este prea sărac, cauzând supraîncălzirea motorului"],"correctIndex":0,"explanation":"Bujii cu capătul maroniu-deschis (bej) indică un amestec carburant NORMAL, corect reglat. Bujiile nu sunt cauza problemei motorului – problema este în altă parte."},{"id":44,"category":"Cunoașterea aeronavei","question":"Litrometrul cu care este echipată o aeronavă ultraușoară motorizată este calibrat să ofere cea \nmai mare acuratețe atunci când:","answers":["Cantitatea de combustibil este mică","Este calibrat să arate cu exactitate cantitatea de carburant în orice stadiu al zborului","Rezervoarele de combustibil sunt goale","Rezervoarele de combustibil sunt pline"],"correctIndex":0,"explanation":"Atenție: această întrebare testează o caracteristică specifică de calibrare a rezervorului. La cantități mici de combustibil, variațiile de volum produc variații mai mari ale nivelului, ceea ce poate oferi mai multă precizie de citire la fundul rezervorului, în funcție de geometria acestuia. IMPORTANT: acuratețea generală a litrometrului depinde în primul rând de atitudinea aeronavei (poziție orizontală), conform ID 41. Cei doi factori se aplică în contexte diferite."},{"id":45,"category":"Cunoașterea aeronavei","question":"Altimetrul aeronavei este cuplat la prizele de presiune:","answers":["statică","totală și statică","dinamică","statică și dinamică"],"correctIndex":0,"explanation":"Altimetrul folosește variația presiunii statice pentru a măsura altitudinea. Priza statică măsoară presiunea atmosferică ambientală, care scade cu altitudinea conform legii barometrice."},{"id":46,"category":"Cunoașterea aeronavei","question":"Dacă, în timpul unui zbor în coborâre, priza statică la care este conectat variometrul se \nblochează, instrumentul va indica:","answers":["Valoarea zero","Coborâre","Valoarea indicată în momentul blocării","Urcare"],"correctIndex":0,"explanation":"Dacă priza statică se blochează în coborâre, nu mai există variație de presiune → variometrul (care măsoară rata de variație a presiunii statice) va indica ZERO, indiferent de mișcarea verticală reală."},{"id":47,"category":"Cunoașterea aeronavei","question":"Care dintre următoarele afirmații este falsă?","answers":["Rulajul către pista în serviciu se poate face cu orice viteză","Schimbul de ulei al motorului se face conform indicațiilor găsite în manualul de întreținere și \nexploatare al aeronavei","Verificarea aeronavei înainte de zbor este obligatorie","Murdăria aflată pe palele elicei poate cauza vibrații în exploatarea rotorului"],"correctIndex":0,"explanation":"Această afirmație este FALSĂ: Rulajul către pista în serviciu trebuie executat cu VITEZĂ REDUSĂ, nu cu orice viteză. Viteza redusă la rulaj evită accidentele și respectă regulamentele aeroportuare."},{"id":48,"category":"Cunoașterea aeronavei","question":"Creșterea înălțimii de zbor are efect asupra carburației, rezultând o scădere relativă a puterii \nmotorului, datorită:","answers":["Îmbogățirii excesive a amestecului carburant","Amestecului carburant excesiv de sărac","Reducerea capacitații de vaporizare a benzinei","Nu are niciun efect asupra performanțelor motorului"],"correctIndex":0,"explanation":"La altitudini mari, aerul este rarefiat (mai puțin dens). Carburatorul dozează volum, nu masă, deci amestecul devine PREA BOGAT (aer insuficient față de combustibil), reducând puterea motorului."},{"id":49,"category":"Cunoașterea aeronavei","question":"Care dintre următoarele afirmații este falsă ?","answers":["Viteza față de sol a aeronavei este măsurată cu ajutorul vitezometrului","FL105 înseamnă 10500 ft","Variometrul indică viteza verticală a aeronavei","Vitezometrul indică viteza față de aer"],"correctIndex":0,"explanation":"Această afirmație este FALSĂ: viteza față de sol (GS) NU se măsoară cu vitezometrul – acesta indică IAS (viteza față de aer). GS se determină cu GPS sau prin calcul navigațional."},{"id":50,"category":"Cunoașterea aeronavei","question":"Butonul de oprire al motorului (kill switch) nu funcționează. Care este cea mai probabilă cauză?","answers":["Circuitul de punere la masa s-a întrerupt","Umiditatea aerului este prea mare","Motorul nu este pornit","Toate variantele enumerate sunt greșite"],"correctIndex":0,"explanation":"Dacă kill-switch-ul motoparapantei nu funcționează (nu oprește motorul), cauza cea mai probabilă este un circuit de masă (ground circuit) întrerupt între buton și bobina de aprindere."},{"id":51,"category":"Cunoașterea aeronavei","question":"Cum se măsoară temperatura unui cilindru ?","answers":["Cu ajutorul unui senzor de temperatură în care două metale diferite se dilată diferit, producând \nun curent electric specific","Cu ajutorul curentului electric produs de alternator","Cu ajutorul curentului electric produs de generator","Printr-un senzor de temperatură montat în galeria de evacuare"],"correctIndex":0,"explanation":"Temperatura capului de cilindru se măsoară cu un senzor termocuplu (termocouple) montat pe cilindru. Cele două metale diferite produc o tensiune proporțională cu temperatura (efectul Seebeck)."},{"id":52,"category":"Cunoașterea aeronavei","question":"În timpul decolării, pe panta de urcare, un pilot suspectează detonații ale motorului. Care este \nprima acțiune pe care trebuie să o facă acesta ?","answers":["Se micșorează unghiul de urcare al aeronavei pentru a creşte viteza și a oferi o răcire mai bună \na motorului","Anunță TWR despre problema tehnică","Face un viraj de 180 grade şi aterizează invers pe direcția de decolare/aterizare","Oprește motorul"],"correctIndex":0,"explanation":"La suspectarea detonațiilor (knocking) în urcare: se reduce UNGHIUL DE URCARE (se aplatizează traiectoria) pentru a crește viteza aeronavei și implicit răcirea motorului prin flux de aer mai mare."},{"id":53,"category":"Cunoașterea aeronavei","question":"Care dintre următoarele afirmații este greșită ?","answers":["Dacă la verificarea combustibilului înainte de zbor, se descoperă în combustibilul drenat urme \nde apă sau alți contaminanți, rezervoarele trebuie golite și decontaminate","Apa din benzină poate fi datorată umezelii relative a aerului, atunci când temperatura ambientală \nscade suficient pentru ca vaporii de apă din aerul aflat în rezervor, să condenseze pe pereții \nrezervorului și să cadă în combustibil","Dacă la verificarea combustibilului înainte de zbor se observă urme de apă sau impurități, se va \ncontinua drenarea până când proba de combustibil devine curată; în cazul în care sunt indicii cu \nprivire la o contaminare masivă a combustibilului, aeronava este oprită la sol până la remedierea \nproblemei","Verificarea combustibilului prin drenare se face la începutul fiecărei zile de zbor și după fiecare \nalimentare cu combustibil"],"correctIndex":0,"explanation":"Această afirmație este GREȘITĂ: Dacă se găsesc urme de apă sau contaminanți în combustibil, procedura corectă este să se continue DRENAREA până când proba devine curată – nu neapărat golirea integrală a rezervoarelor, dacă contaminarea este minoră. Golirea totală se face la contaminare masivă."},{"id":54,"category":"Cunoașterea aeronavei","question":"Unde este amplasat senzorul de temperatură al uleiului într-un motor cu piston?","answers":["După trecerea uleiului prin radiator dar înainte de zonele fierbinți ale motorului","În galeria de evacuare","În filtrul de ulei","Înainte de radiatorul de ulei"],"correctIndex":0,"explanation":"Senzorul de temperatură a uleiului este amplasat în circuitul de ulei DUPĂ radiatorul (răcitorul) de ulei și ÎNAINTE de zonele termice ale motorului — măsoară astfel temperatura uleiului care intră efectiv în motor pentru lubrifiere. Aceasta permite pilotului să știe dacă uleiul s-a încălzit suficient înainte de zbor și dacă rămâne în limitele de operare."},{"id":57,"category":"Cunoașterea aeronavei","question":"Aeronavele ultraușoare motorizate sunt echipate de obicei cu motoare cu piston. Care este \nscopul piesei denumite arbore cotit într-un astfel de motor ?","answers":["Transformă mișcarea liniară a pistoanelor în mișcare de rotație","Se rotește la jumătate din viteza axei cu came","Transformă mișcarea de rotație a pistoanelor în mișcare liniară","Comandă deschiderea și închiderea supapelor de admisie și evacuare"],"correctIndex":0,"explanation":"Arborele cotit (crankshaft) transformă mișcarea LINIARĂ (du-te-vino) a pistoanelor în mișcare de ROTAȚIE care antrenează elicea. Este piesă principală în conversia energiei."},{"id":60,"category":"Performanțe de zbor și planificarea zborului","question":"Viteza de angajare crește în timpul unui viraj sau în timpul redresării dintr-un picaj deoarece...","answers":["Crește factorul de sarcină (accelerația gravitațională)","Unghiul de atac scade","Viteza avionului a crescut în timpul picajului","A fost depășit unghiul critic de atitudine față de orizont"],"correctIndex":0,"explanation":"Viteza de angajare (VS) crește în viraj și redresare din picaj deoarece FACTORUL DE SARCINĂ (n = L/G) crește. VS_viraj = VS_1g × √n. La 60° înclinare, n=2 deci VS crește cu √2 ≈ 1,41."},{"id":61,"category":"Performanțe de zbor și planificarea zborului","question":"Ce indică linia roșie de la capătul arcului galben al unui vitezometru?","answers":["VNE – viteza care nu trebuie depășită niciodată","VS – viteza de angajare","VFE – viteza maximă pentru zbor cu flapsul bracat","VA – viteza de manevră"],"correctIndex":0,"explanation":"Linia roșie (red line) la capătul arcului galben al vitezometrului marchează VNE (Velocity Never Exceed) – viteza maximă absolută. Deasupra VNE există risc de distrugere structurală."},{"id":62,"category":"Performanțe de zbor și planificarea zborului","question":"o viteză necesară pentru a genera portanță mai mică","answers":["1 și 3 sunt corecte","Toate variantele enumerate sunt corecte","2 și 4 sunt corecte","2 și 3 sunt corecte"],"correctIndex":0,"explanation":"Densitate aer scăzută → (1) tracțiunea elicei scade (elicele sunt aripi, portanță mai mică) și (3) performanțele motorului scad (mai puțin oxigen = ardere mai slabă). Performanțele de zbor se DEGRADEAZĂ."},{"id":63,"category":"Performanțe de zbor și planificarea zborului","question":"Viteza indicată este de 130 km/h, eroarea vitezometrului este de 5 km/h (indică cu 5 km/h mai \nmult), vântul bate din faţă cu 15 km/h. Care este viteza aeronavei faţă de fileurile de aer? Dar \nfaţă de sol?","answers":["Viteza aeronavei față de fileurile de aer: 125 km/h \nViteza aeronavei față de sol: 110 km/h","Viteza aeronavei față de fileurile de aer: 130 km/h \nViteza aeronavei față de sol: 115 km/h","Viteza aeronavei față de fileurile de aer: 135 km/h \nViteza aeronavei față de sol: 120 km/h","Viteza aeronavei față de fileurile de aer: 125 km/h \nViteza aeronavei față de sol: 145 km/h"],"correctIndex":0,"explanation":"IAS=130, eroare +5 → CAS=125 km/h ≈ TAS=125 km/h (la altitudine joasă). Vânt față 15 km/h → GS = TAS - vânt = 125-15 = 110 km/h. Răspuns: TAS=125 km/h, GS=110 km/h."},{"id":65,"category":"Performanțe de zbor și planificarea zborului","question":"Cum este afectată distanța de decolare într-o zi în care densitatea aerului este scăzută?","answers":["Crește","Nu este afectată","Scade","Depinde de abilitățile pilotului"],"correctIndex":0,"explanation":"Cu densitate scăzută a aerului, aeronava necesită o viteză mai mare pentru a genera portanța necesară. Distanța de rulaj la decolare CREȘTE deoarece aeronava accelerează mai greu și atinge viteza de ridicare mai târziu."},{"id":66,"category":"Performanțe de zbor și planificarea zborului","question":"Vă pregătiți să decolați în condiții de temperatură exterioară foarte ridicată. Puterea generată \nde motor va fi :","answers":["mai slabă ca de obicei","mai slabă la regim mare, mai puternică la regim redus","la nivelul obișnuit","mai mare ca de obicei"],"correctIndex":0,"explanation":"Temperatura ridicată → densitate aer scăzută → puterea motorului SCADE (mai puțin oxigen). Motorul aspirat natural este mai afectat decât cel supraalimentat."},{"id":67,"category":"Performanțe de zbor și planificarea zborului","question":"Cum este viteza indicată (IAS) față de viteza adevărată (TAS), în funcție de altitudine ?","answers":["TAS este mai mare ca IAS, la altitudine mai mare","IAS este mai mare ca TAS, la altitudine mai mare","Cele două viteze au valori egale în orice condiții","TAS este mai mare ca IAS doar la nivelul mediu al mării"],"correctIndex":0,"explanation":"La altitudine mare, densitatea aerului scade. Vitezometrul (IAS) măsoară presiunea dinamică (½ρv²). La densitate ρ mai mică, viteza reală (TAS) trebuie să fie MAI MARE pentru a produce aceeași presiune dinamică. Deci TAS > IAS la altitudine."},{"id":68,"category":"Performanțe de zbor și planificarea zborului","question":"Zburând în urcare utilizând viteza VX obținem:","answers":["Cel mai mare (abrupt) unghi de urcare","Performanțe slabe de zbor în urcare","Cel mai mare câștig de înălțime în cel mai scurt timp","Cel mai mare câștig de înălțime în cea mai mare distanță orizontală"],"correctIndex":0,"explanation":"VX = viteza pentru CEL MAI MARE UNGHI de urcare (Best Angle of Climb). Se folosește pentru a câștiga înălțime peste un obstacol scurt. VY = cel mai mare câștig de înălțime pe unitate de timp."},{"id":69,"category":"Performanțe de zbor și planificarea zborului","question":"Raportat la sol, cum sunt afectate unghiul și distanța de planare în cazul unui vânt care suflă din \nfață?","answers":["Unghiul de planare (coborâre) crește (este mai abrupt) iar distanța planată se micșorează","Unghiul de planare (coborâre) și distanța planată se reduc","Unghiul de planare (coborâre) și distanța planată se măresc (unghiul devine mai abrupt)","Nu sunt afectate"],"correctIndex":0,"explanation":"Cu vânt din față: viteza față de aer rămâne aceeași dar viteza față de sol scade. Aeronava pierde distanță orizontală mai repede → unghiul de planare (față de sol) devine MAI ABRUPT și distanța planată SCADE."},{"id":70,"category":"Performanțe de zbor și planificarea zborului","question":"Dacă zburăm în urcare cu flapsul scos (bracat/coborât), unul dintre efecte este:","answers":["Rata de urcare și unghiul de urcare se reduc","Rezistența la înaintare se reduce","Portanța generată de aripă se reduce","Performanțele de zbor în urcare se măresc"],"correctIndex":0,"explanation":"Flapsul scos la urcare crește portanța dar și REZISTENȚA la înaintare, ceea ce reduce RATA DE URCARE și UNGHIUL de urcare față de cazul fără flaps."},{"id":71,"category":"Performanțe de zbor și planificarea zborului","question":"În timpul aterizării, dacă o aeronavă are o viteză față de sol (GS) mai mare decât cea indicată \n(IAS) de vitezometrul acesteia, înseamnă că:","answers":["Vântul suflă din spatele aeronavei","Presiunea atmosferică este mare","Vântul suflă din fața aeronavei","Temperatura ambientală este optimă"],"correctIndex":0,"explanation":"Dacă GS > IAS în aterizare, înseamnă că avem vânt DIN SPATE (tailwind) – aeronava are viteză față de sol mai mare decât față de aer. Aterizarea cu vânt din spate este periculoasă (distanță mai mare de frânare)."},{"id":72,"category":"Performanțe de zbor și planificarea zborului","question":"Ce indică începutul liniei verzi de pe un vitezometru?","answers":["VS1 – viteza de angajare în configurație de zbor normal (fără flaps scos)","VFE – viteza maximă pentru zbor cu flapsul bracat","VNE – viteza care nu trebuie depășită niciodată","VS0 – viteza de angajare în configurație de aterizare (flaps scos)"],"correctIndex":0,"explanation":"Începutul arcului verde indică VS1 = viteza de angajare în configurație normală (fără flaps). Sub VS1, aeronava se angajează (pierdere portanță) în configurația de cruisare."},{"id":73,"category":"Performanțe de zbor și planificarea zborului","question":"Care este relația dintre forțele care acționează asupra unei aeronave motorizate în timpul unui \nzbor neaccelerat, la orizontală?","answers":["Tracțiunea egalează rezistența / portanța egalează greutatea","Portanța egalează suma tracțiunii, rezistenței și a greutății","Tracțiunea egalează suma greutății și a rezistenței la înaintare","Rezistența egalează portanța / tracțiunea egalează greutatea"],"correctIndex":0,"explanation":"În zbor orizontal neaccelerat (echilibrat): TRACȚIUNEA = REZISTENȚA și PORTANȚA = GREUTATEA. Nu există accelerație deci suma forțelor = 0 pe fiecare axă."},{"id":74,"category":"Performanțe de zbor și planificarea zborului","question":"Pe măsură ce altitudinea crește și densitatea aerului scade:","answers":["rezistența la înaintare și consumul de carburant se reduc","crește rezistența la înaintare","viteza față de sol a aeronavei scade","consumul de carburant crește"],"correctIndex":0,"explanation":"Odată cu creșterea altitudinii și scăderea densității aerului: rezistența aerodinamică (∝ρv²) SCADE, ceea ce reduce și consumul de combustibil necesar pentru a menține viteza."},{"id":75,"category":"Performanțe umane","question":"Unde are loc degajarea căilor respiratorii ale victimei unui accident de aviație ?","answers":["La locul producerii accidentului, cât mai urgent","La spital, cu instrumente specializate","În ambulanță, de către personalul specializat","La sediul operatorului aeronavei, unde victima rămâne până la sosirea autorităților competente \npentru investigarea accidentului"],"correctIndex":0,"explanation":"Degajarea căilor respiratorii (hiperextensia capului + ridicarea bărbiei) se face IMEDIAT, la locul accidentului. Fiecare secundă contează pentru oxigenarea creierului."},{"id":76,"category":"Performanțe umane","question":"Substanțele antiseptice se folosesc pentru:","answers":["Dezinfectarea rănilor","Calmarea durerilor","Oprirea hemoragiei","Imobilizarea fracturilor"],"correctIndex":0,"explanation":"Substanțele antiseptice (alcool, iod, apă oxigenată etc.) se folosesc pentru DEZINFECTAREA rănilor – distrug microorganismele și previn infecția. Nu au efect analgezic sau hemostatic direct."},{"id":77,"category":"Performanțe umane","question":"Ce tehnică trebuie să folosească un pilot pentru a scana eficient spațiul aerian în care zboară şi \na observa traficul aerian din apropiere ?","answers":["Focalizează privirea pe diferite segmente ale cerului pentru intervale scurte de timp","Se concentrează pe mişcările observate de vederea periferică","Îşi mută rapid privirea între bordul aeronavei și diverse segmente ale cerului","Se bazează pe sistemul de evitare al coliziunilor TCAS"],"correctIndex":0,"explanation":"Scanarea eficientă a spațiului aerian se face prin FOCALIZARE pe segmente de cer (sectorizare vizuală) pentru intervale SCURTE de timp. Vederea periferică detectează mișcarea dar nu are acuitate pentru detalii."},{"id":78,"category":"Performanțe umane","question":"Care sunt cele două simțuri ai căror receptori se află în ureche?","answers":["simțul auzului și simțul echilibrului și poziției spațiale","simțul olfactiv și simțul vizual","simțul auzului și simțul tactil","simțul tactil și simțul olfactiv"],"correctIndex":0,"explanation":"În ureche se află doi receptori senzoriali importanți: cohleea (auzul) și aparatul vestibular (echilibrul și orientarea spațială – canalele semicirculare și utriculul/saculul)."},{"id":79,"category":"Performanțe umane","question":"Unde se verifică dacă victima unui accident are puls ?","answers":["Lângă mărul lui Adam, în spațiul dintre trahee și mușchii gâtului","În zona inimii","La încheietura mâinii","În zona tâmplelor"],"correctIndex":0,"explanation":"Pulsul se verifică LA CAROTIDĂ – lângă mărul lui Adam, în spațiul dintre trahee și mușchii sternocleidomastoizii gâtului. Artera carotidă este accesibilă și pulsul este puternic."},{"id":80,"category":"Performanțe umane","question":"Care este prima măsură pe care o luați în cazul accidentării unei persoane pe aerodrom ?","answers":["Acordarea primului ajutor până la sosirea cadrelor medicale","Transportul la cel mai apropiat spital","Transportul imediat până la prima localitate și anunțarea accidentului la 112","Depunerea unei informări despre accident către autoritățile competente"],"correctIndex":0,"explanation":"Prima măsură la accidentarea unei persoane pe aerodrom este ACORDAREA PRIMULUI AJUTOR până la sosirea echipajului medical. Transportul prematur poate agrava leziunile (ex. traumatism spinal)."},{"id":81,"category":"Performanțe umane","question":"Cu toate că un pilot deține un certificat medical valabil, cine decide dacă acesta este apt pentru \nun zbor ?","answers":["Pilotul","A.A.C.R.","Un examinator medical","Operatorul aerian pentru care lucrează"],"correctIndex":0,"explanation":"Decizia finală privind aptitudinea pentru zbor revine PILOTULUI. Chiar cu certificat medical valabil, pilotul trebuie să se autoevalueze și să renunțe la zbor dacă se simte incapacitat (boală, oboseală, medicamente)."},{"id":82,"category":"Performanțe umane","question":"Lipsa unei cantități suficiente de oxigen în corp poartă denumirea de:","answers":["Hipoxie","Hipoglicemie","Ipohondrie","Hiperventilație"],"correctIndex":0,"explanation":"Hipoxia = deficit de oxigen la nivel tisular/cerebral. La altitudine, presiunea parțială a O₂ scade și poate apărea hipoxie hipobară. Simptomele includ euforie, dezorientare, pierderea cunoștinței."},{"id":83,"category":"Performanțe umane","question":"Ce criterii trebuie să îndeplinească o atelă ? \n \n1) Să fie suficient de lungă pentru a imobiliza articulațiile superioare și inferioare a membrului \nfracturat \n2) Să fie sterilă \n3) Să fie rigidă\"","answers":["1) și 3) sunt corecte","Toate variantele de răspuns enumerate sunt greșite","1) și 2) sunt corecte","2) și 3) sunt corecte"],"correctIndex":0,"explanation":"O atelă corectă trebuie: (1) să fie suficient de lungă pentru a imobiliza articulațiile superioare și inferioare ale membrului fracturat ȘI (3) să fie rigidă pentru a preveni mișcarea fragmentelor osoase."},{"id":84,"category":"Performanțe umane","question":"Ce măsuri se iau în cazul victimelor cu fracturi de claviculă (umărul victimei este deplasat ușor \nînainte și în jos) ?","answers":["Suspendați brațul într-o eșarfă sau o chingă legată de gât","Culcați victima pe spate","Culcați victima pe burtă","Aduceți umărul în poziția normală"],"correctIndex":0,"explanation":"Fractura de claviculă → brațul cade înainte și în jos. Tratament: suspendat brațul într-o eșarfă legată de gât pentru a descărca claviculă. Nu se încearcă repoziționarea."},{"id":85,"category":"Performanțe umane","question":"Care sistem al corpului este responsabil pentru distribuția oxigenului în întreg organismul?","answers":["sistemul circulator","sistemul oxidant","sistemul nervos","sistemul respirator"],"correctIndex":0,"explanation":"Sistemul CIRCULATOR (inimă + vase de sânge) transportă oxigenul legat de hemoglobina eritrocitelor din plămâni la toate țesuturile corpului."},{"id":86,"category":"Performanțe umane","question":"Pentru a putea desfășura activități de zbor în siguranță, pilotul trebuie să fie:","answers":["într-o stare psiho-fizică bună","pregătit să acționeze parașuta de siguranță","instructor sau examinator","sub influența alcoolului"],"correctIndex":0,"explanation":"Pilotul trebuie să fie într-o stare PSIHO-FIZICĂ bună: odihnit, nebolnav, fără stres major, fără alcool/droguri/medicamente imparante. Aceasta este condiția esențială pentru zbor în siguranță."},{"id":87,"category":"Performanțe umane","question":"Cum se poate reduce răul de mișcare?","answers":["Privind în afara cabinei aeronavei","Respirând într-o pungă de hârtie","Privind în cabina aeronavei","În viraje nu trebuie depășită o înclinare mai mare de 5 grade"],"correctIndex":0,"explanation":"Răul de mișcare (kinetoza) se reduce privind ÎN AFARA cabinei aeronavei, către orizontul vizual stabil. Vederea exterioară recalibrează sistemul vestibular și reduce conflictul senzorial."},{"id":88,"category":"Performanțe umane","question":"Ce funcție a organismului suferă cel mai mult din cauza scăderii presiunii atmosferice?","answers":["funcția respiratorie","funcția digestivă","funcția auditivă","funcția olfactivă"],"correctIndex":0,"explanation":"Scăderea presiunii atmosferice afectează în primul rând FUNCȚIA RESPIRATORIE: presiunea parțială a O₂ scade, respirația devine mai dificilă și poate apărea hipoxia. Celelalte funcții sunt afectate secundar."},{"id":89,"category":"Performanțe umane","question":"Pentru a reduce stresul într-o situație de urgență, este necesar ca pilotul să:","answers":["Fie pregătit pentru eventualitatea întâmplării unei situații de urgență și să fie pregătit referitor \nla modul de acțiune pentru rezolvarea acestor situații","Tragă adânc aer în piept și să nu decidă până nu a evaluat consecințele fiecărei acțiuni, indiferent \nde timpul pierdut până s-a luat o decizie","Predea comenzile aeronavei unui pilot mai experimentat","Acționeze urmând primul instinct"],"correctIndex":0,"explanation":"Reducerea stresului în urgență se face prin PREGĂTIRE MENTALĂ anterioară: pilotul care a exersat procedurile de urgență reacționează calm și eficient. Improvizația în urgență duce la erori."},{"id":90,"category":"Performanțe umane","question":"Referitor la eroarea umană, ce variantă poate duce la situații periculoase?","answers":["Tendința de a vedea ceea ce ne așteptăm să vedem","Conștientizarea permanentă a situației în care ne aflăm","Utilizarea corectă a listelor de verificare (Checklist)","Verificare multiplă a acțiunilor pe care le facem"],"correctIndex":0,"explanation":"Eroarea umană periculoasă: TENDINȚA DE A VEDEA CEEA CE AȘTEPTĂM SĂ VEDEM (confirmation bias). Pilotul poate ignora informații critice care contravin așteptărilor sale. Conștientizarea acestei tendințe ajută la evitarea ei."},{"id":91,"category":"Performanțe umane","question":"Cum trebuie așezată victima unui accident care prezintă hemoragie externă ?","answers":["Astfel încât rana să fie mai sus decât nivelul corpului","Cu picioarele mai sus decât nivelul capului","Astfel încât zona să fie mai jos decât nivelul corpului","Astfel încât să nu pătrundă corpuri străine în rană"],"correctIndex":0,"explanation":"La victima cu hemoragie externă, rana trebuie menținută MAI SUS decât nivelul corpului. Gravitația reduce fluxul de sânge spre rană și ajută la oprirea hemoragiei. Combinat cu presiune directă."},{"id":92,"category":"Performanțe umane","question":"Ce reprezintă conștientizarea situațională pentru un pilot?","answers":["Abilitatea pilotului de a avea o imagine de ansamblu asupra aspectelor care au loc în cabină și în \njurul aeronavei","Abilitatea pilotului de a respecta procedurile standard","Abilitatea pilotului de a rămâne calm în situații critice","Abilitatea pilotului de a transmite informații în mod clar"],"correctIndex":0,"explanation":"Conștientizarea situațională (Situational Awareness) = abilitatea pilotului de a percepe, înțelege și anticipa tot ce se întâmplă în cabină și în jurul aeronavei. Este esențială pentru prevenirea accidentelor."},{"id":93,"category":"Performanțe umane","question":"Cum pot fi recunoscute fracturile de membre la victimele unui accident ?","answers":["Prin mișcarea/poziția nefirească a membrului fracturat","Prin culoarea roșie a zonei fracturate","Prin elasticitatea exagerată a membrului fracturat","O fractură a membrului nu lasă semne vizibile"],"correctIndex":0,"explanation":"Fracturile se recunosc prin poziție/mișcare NEFIREASCĂ a membrului (deformare, scurtare, rotație anormală), durere localizată, tumefacție și incapacitate funcțională."},{"id":94,"category":"Performanțe umane","question":"Ce măsuri de prim ajutor se iau în cazul victimelor cu traumatisme ale coloanei vertebrale, dacă \nfuncțiile vitale ale acestuia sunt asigurate ?","answers":["Dacă nu există un alt pericol, nu se mișcă accidentatul din poziția în care se află până la sosirea \nserviciilor de urgență","Se transportă imediat victima la spital așezată pe o targă improvizată","Se informează victima despre efectele ce pot rămâne pe viitor în urma traumatismului","Se transportă imediat victima la spital, cu orice mijloc de transport aflat la îndemână"],"correctIndex":0,"explanation":"La traumatism de coloană vertebrală cu funcții vitale intacte: NU se mișcă victima până la sosirea echipajului medical specializat. Orice mișcare necontrolată poate provoca leziuni medulare ireversibile."},{"id":95,"category":"Meteorologie","question":"Ce caracteristici are o masă de aer instabilă ?","answers":["Turbulențe, vizibilitate bună şi nori Cumuliformi","Turbulențe şi vizibilitate slabă","Nori Nimbostratus","Nori Stratiformi"],"correctIndex":0,"explanation":"Masa de aer instabilă se caracterizează prin: turbulențe puternice, vizibilitate bună (aer curat, convectiv) și nori CUMULIFORMI (cumulus, cumulonimbus). Opusul este masa de aer stabilă cu nori stratiformi și vizibilitate slabă."},{"id":96,"category":"Meteorologie","question":"Atmosfera standard internațională definește o scădere a presiunii atmosferice pe măsură ce \nînălțimea crește. Pentru piloții de aviație generală, aceasta este de aproximativ:","answers":["1013 hPa MSL scăzând cu 1hPa pe 30 ft","1013 hPa MSL scăzând cu 30 hPa pe 1 ft","1015 hPa MSL scăzând cu 1 hPa pe 30 ft","1015 hPa MSL scăzând cu 30 hPa per 100 ft"],"correctIndex":0,"explanation":"Atmosfera standard ICAO (ISA): presiunea la nivel marin = 1013,25 hPa, scăzând cu aproximativ 1 hPa la fiecare 30 ft (sau 8-9 m). Temperatura scade cu 2°C/300m (1,98°C/1000ft)."},{"id":97,"category":"Meteorologie","question":"Valoarea densității în atmosfera standard internațională (ISA) este de:","answers":["1225g/m3","29,6 mm Hg","1013,2 mb","1225g/m2"],"correctIndex":0,"explanation":"Densitatea standard ISA la nivel marin = 1225 g/m³ (= 1,225 kg/m³). Temperatura standard = +15°C, presiunea = 1013,25 hPa, densitate = 1,225 kg/m³."},{"id":98,"category":"Meteorologie","question":"Estimați ora aterizării la aeroportul Băneasa la ora 12:00 UTC . Prognoza meteo este următoarea: \nTAF LRBS 250900Z 2510/2519 18007KT 9999 SCT020 BKN100 BECMG 2511/2514 8000 RA SCT010 \nOVC020 PROB30 TEMPO 2510/2518 VRB10G25KT TSRA SCT005 BKN015 CB. \nCare este baza norilor cei mai joși prognozați? Puteți zbura în aceste condiții ?\"","answers":["500 ft, Nu","1500 ft, Da","200 m, Nu","500 m, Da"],"correctIndex":0,"explanation":"Din TAF: PROB30 TEMPO ... SCT005 = scattered clouds la 500 ft. Aceasta este baza cea mai joasă posibilă. La 500 ft baza norilor, zborul VFR (minim 1000 ft baza norilor în multe condiții) nu este permis → Nu."},{"id":99,"category":"Meteorologie","question":"Care este viteza aproximativă a uni vânt de 20 de noduri, exprimată în m/s ?","answers":["10 m/s","20 m/s","15 m/s","12 m/s"],"correctIndex":0,"explanation":"1 nod = 0,5144 m/s. Deci 20 noduri × 0,514 ≈ 10,3 m/s ≈ 10 m/s. Utilă pentru conversia rapidă: noduri / 2 ≈ m/s."},{"id":100,"category":"Meteorologie","question":"La ce temperatură va ajunge o masă de aer uscat cu temperatura inițială de 10˚C care se răcește \nadiabatic până la 1000m ?","answers":["0 grade Celsius","3,5 grade Celsius","- 2 grade Celsius","1 grad Celsius"],"correctIndex":0,"explanation":"Aerul uscat care se ridică se răcește adiabatic cu DALR = 1°C/100m. De la 0m la 1000m: scădere de 10°C. 10°C - 10°C = 0°C. Această valoare este temperatura la 1000m."},{"id":101,"category":"Meteorologie","question":"Vântul de forfecare este …","answers":["Schimbarea bruscă pe verticală și orizontală a vitezei și direcției vântului","Vântul care curge spre baza versanților unui munte, întâlnit în special în Alpi","O schimbare a vitezei vântului de peste 30 km/h","O creștere ușoară a vitezei vântului la altitudini de peste 12000 ft."],"correctIndex":0,"explanation":"Vântul de forfecare (wind shear) = modificare BRUSCĂ a vitezei și/sau direcției vântului atât pe verticală cât și pe orizontală. Extrem de periculos la decolare/aterizare (microburst, front de rafală)."},{"id":102,"category":"Meteorologie","question":"Care dintre următoarele mesaje meteorologice poate fi abreviat CAVOK, în conformitate cu \nreglementările specifice ?","answers":["15003KT 9999 BKN110 17/11 Q1024 NOSIG","04012G26KT 9999 BKN030 11/07 Q1024 NOSIG","24009KT 6000 RA SCT010 OVC030 12/11 Q1007 TEMPO 4000","29010KT 9000 SCT045TCU 16/12 Q1015 RESHRA NOSIG"],"correctIndex":0,"explanation":"CAVOK = Cloud And Visibility OK: vizibilitate ≥ 10000m (9999), fără nori sub 5000ft sau altitudine minim sector, fără CB/TCU. Opțiunea a) are 9999 (>10km), BKN110 (nori la 11000ft, deasupra 5000ft), fără precipitații → poate fi CAVOK."},{"id":103,"category":"Meteorologie","question":"Treapta barică, de la nivelul mării până la 5000 ft., scade cu :","answers":["1 milibar pentru fiecare 30 ft.","1 milibar pentru fiecare 1000 ft.","1 milibar pentru fiecare 30 m.","1 milibar pentru fiecare 100 m."],"correctIndex":0,"explanation":"Gradientul baric = 1 hPa la 30 ft (de la MSL până la ~5000ft). Altimetrul folosește această relație pentru a converti diferența de presiune în diferență de înălțime."},{"id":104,"category":"Meteorologie","question":"Printre vânturile locale se numără și briza marină. Când și din ce direcție suflă aceasta, în cazul \nzborului după regulile de zbor aplicabile aeronavelor ultraușoare motorizate ?","answers":["ziua, dinspre mare către țărm","paralel cu țărmul, de la nord la sud","noaptea, dinspre mare către țărm","ziua, dinspre țărm către mare"],"correctIndex":0,"explanation":"Briza marină apare ZIUA: soarele încălzește mai repede uscatul decât marea. Aerul cald de pe uscat urcă, cel rece de pe mare se deplasează spre țărm. Noaptea direcția se inversează (briză de uscat)."},{"id":105,"category":"Meteorologie","question":"Vântul care suflă spre vârful unui obstacol orografic, pe timp de zi, datorită încălzirii regiunilor \njoase ale acestuia, se numește:","answers":["vânt anabatic","vânt de contrapantă","vânt geostrofic","vânt catabatic"],"correctIndex":0,"explanation":"Vântul ANABATIC urcă pantele în timpul zilei datorită încălzirii solului pe versanți de soare. Aerul cald de pe pantele joase se ridică spre vârful muntelui. Opusul = vânt catabatic (noaptea, la vale)."},{"id":106,"category":"Meteorologie","question":"Cantitatea de vapori de apă pe care aerul o poate reține depinde de :","answers":["temperatura aerului","sursa din care se evaporă apa","temperatura punctului de rouă","stabilitatea aerului"],"correctIndex":0,"explanation":"Cantitatea de vapori de apă pe care aerul o poate reține (umiditate de saturație) depinde DIRECT de TEMPERATURĂ. Aerul cald poate reține mai mulți vapori decât aerul rece (relație exponențială)."},{"id":107,"category":"Meteorologie","question":"Faptul că o masă de aer încălzită de soare urmează o traiectorie ascendentă este urmarea:","answers":["Convecției","Conducției","Radiației","Vântului"],"correctIndex":0,"explanation":"CONVECȚIA = mișcarea verticală a aerului cauzată de diferențele de temperatură/densitate. Aerul încălzit de soare devine mai ușor și urcă. Aceasta generează termice și nori cumuliformi."},{"id":108,"category":"Meteorologie","question":"Direcția vântului este indicată de unghiul format între nordul geografic și:","answers":["direcția din care bate vântul, măsurată în sensul acelor de ceasornic","direcția din care bate vântul, măsurată în sens invers acelor de ceasornic","direcția în care suflă vântul, măsurată în sensul acelor de ceasornic","direcția în care suflă vântul, măsurată în sens invers acelor de ceasornic"],"correctIndex":0,"explanation":"Direcția vântului = unghiul măsurat de la NORDUL GEOGRAFIC, în SENSUL acelor de ceasornic, până la DIRECȚIA DIN CARE BATE VÂNTUL (nu direcția spre care suflă). Ex: vânt 270° = vânt din vest."},{"id":109,"category":"Meteorologie","question":"Fenomenele meteorologice care reduc vizibilitatea se produc atunci când:","answers":["Diferența dintre temperatura punctului de rouă și temperatura aerului este mică","Temperatura punctului de rouă este mica","Diferența dintre temperatura punctului de rouă și temperatura aerului este mare","Temperatura punctului de rouă este mare"],"correctIndex":0,"explanation":"Fenomenele meteorologice care reduc vizibilitatea (ceață, brumă, ceață de rouă) apar când diferența Temperatură Punct de Rouă – Temperatură Aer este MICĂ (≤ 2°C). La această diferență mică aerul este aproape saturat."},{"id":110,"category":"Navigație","question":"Navigația cu compasul de aviație pe distante mici se face pe ce drum?","answers":["Loxodromă","Meridian","Ortodromă","Paralelă"],"correctIndex":0,"explanation":"Navigația cu compasul pe distanțe mici se face pe LOXODROMĂ (rhumb line) = linie care taie toate meridianele sub același unghi. Pe distanțe scurte, loxodroma este practic o linie dreaptă pe hart Mercator."},{"id":111,"category":"Navigație","question":"Cum se exprimă latitudinea unei locații?","answers":["Prin distanța sa unghiulară în grade de la ecuator, măsurată la centrul pământului, fiind nordică \nsau sudică.","Prin distanța sa de la ecuator fiind nordică sau sudică.","Prin distanța sa unghiulara în grade de la polul respectiv, măsurată la centrul pământului.","Prin distanța sa de la polul respectiv."],"correctIndex":0,"explanation":"Latitudinea = distanța unghiulară față de Ecuator, măsurată la centrul Pământului, exprimată în grade (0-90°N sau S). Este definită de paralele."},{"id":112,"category":"Navigație","question":"Care este distanța pe teren dintre două puncte dacă pe o hartă aeronautică cu scara de 1:500.000 \ndistanța între acestea este de 10 cm?","answers":["50 km","5 km","10 cm","500 km"],"correctIndex":0,"explanation":"Scara 1:500.000 înseamnă 1cm pe hartă = 500.000 cm = 5 km în realitate. 10 cm pe hartă = 50 km pe teren."},{"id":113,"category":"Navigație","question":"Ce direcție compas trebuie urmată pentru a obține un cap magnetic de 029 grade M, dacă deviația \ncompas este de 2 grade Vest ?","answers":["031 grade compas","027 grade compas","029 grade compas","031 grade magnetic"],"correctIndex":0,"explanation":"Cap Compas (CC) = Cap Magnetic (CM) ± Deviație. Regula: deviație Vest → ADAUGI la capul magnetic; deviație Est → SCAZI. Aici: CM = 029°M, deviație = 2°V (vest) → CC = 029 + 2 = 031° compas. Mnemonica TVMDC (True → Variation → Magnetic → Deviation → Compass): mergând spre dreapta scazi Est, adaugi Vest pentru a obține capul compas din capul magnetic."},{"id":114,"category":"Navigație","question":"Transformă 100 grade adevărate într-o direcție magnetică, într-o zonă unde declinația magnetică \neste de 10 grade est:","answers":["Direcția magnetică este de 90 grade","Direcția magnetică este de 110 grade","Direcția magnetică este de 100 grade","Direcția magnetică este de 95 grade"],"correctIndex":0,"explanation":"Declinație 10°E → cap magnetic = cap adevărat - declinație estică = 100° - 10° = 90° magnetic. Sau: cap magnetic = cap adevărat - declinație (est = scazi, vest = adaugi)."},{"id":115,"category":"Proceduri operaționale","question":"Cum se recunoaște vântul de forfecare în zbor?","answers":["Schimbări bruște ale altitudinii și vitezei orizontale și verticale","Schimbări bruște ale capului compas, ratei de viraj, turației motorului și temperaturii ambientale","Schimbări bruște ale presiunii și temperaturii uleiului, turației motorului și ale direcției de zbor","Apariția neașteptată a curenților ascendenți termici într-o după-amiază de vară"],"correctIndex":0,"explanation":"Vântul de forfecare în zbor se manifestă prin schimbări bruște ale altitudinii, vitezei orizontale și vitezei verticale, deoarece aeronava trece brusc dintr-o masă de aer cu o viteză/direcție în alta."},{"id":116,"category":"Proceduri operaționale","question":"Imediat după decolare, în panta de urcare, întâlniți un curent descendent foarte puternic. Ce \nacțiuni trebuie să luați pentru a evita coborârea neintenționată a aeronavei?","answers":["Motorul în plin, se menține configurația de zbor actuală, se zboară cu viteza optimă de urcare – \nVy","Motorul în plin, tren de aterizare (dacă poate fi escamotat) și flaps ridicat, executați un viraj strâns \npentru a părăsi cât mai repede zona periculoasă","Motorul redus complet, se zboară cu o viteză minima de sustentație până se părăsește zona și se \naduce aeronava înapoi în panta de urcare","Motorul în plin, se împinge de manșă pentru a crește viteza și se părăsește zona cât de repede posibil"],"correctIndex":0,"explanation":"La curent descendent sever după decolare: PUTERE MAXIMĂ (gaz în plin) + menținerea configurației actuale + zborul la Vy (viteza optimă de urcare) pentru a maximiza rata de urcare și a depăși zona periculoasă."},{"id":117,"category":"Proceduri operaționale","question":"În care secțiune din AIP România găsiți informații despre aerodromuri ?","answers":["(AD) Aerodromes","(GEN) General","(ENR) En-route","(COM) Comunication"],"correctIndex":0,"explanation":"AIP = Aeronautical Information Publication. Secțiunea AD (Aerodromes) conține date despre aerodromuri: coordonate, elevație, frecvențe, proceduri de apropiere, disponibilitate."},{"id":118,"category":"Proceduri operaționale","question":"Ce înseamnă abrevierea aeronautică TWR ?","answers":["Unitate de control de aerodrom","Pistă umedă","Testare distanță de frânare pe pistă","Unitate de handling"],"correctIndex":0,"explanation":"TWR = Tower = unitate de control de aerodrom. Controlează traficul aerian în zona de control a aerodromului (CTR) și mișcările pe suprafața aerodromului."},{"id":119,"category":"Proceduri operaționale","question":"Dacă setați ......... la fereastra altimetrului, atunci altimetrul va indica nivelul de zbor.","answers":["QNE","QNH","QFF","QFE"],"correctIndex":0,"explanation":"QNE = presiunea standard ISA (1013,25 hPa). Setat la altimetru → acesta indică NIVELUL DE ZBOR (FL). FL100 = 10.000 ft față de suprafața de presiune de 1013 hPa."},{"id":120,"category":"Proceduri operaționale","question":"Dacă setați ......... la fereastra altimetrului, atunci altimetrul va indica înălțimea.","answers":["QFE","QNH","QNE","QFF"],"correctIndex":0,"explanation":"QFE = presiunea la suprafața aerodromului. Setat la altimetru → indica ÎNĂLȚIMEA față de aerodrom. La aterizare, altimetrul arată 0 pe pistă."},{"id":121,"category":"Proceduri operaționale","question":"Doriți să decolați la ora 15:00 LT în luna iunie. Până la ce oră UTC trebuie să depuneți planul de \nzbor pentru respectivul zbor ?","answers":["11:00","12:00","14:30","11:30"],"correctIndex":0,"explanation":"România (UTC+3 vara). Decolarea la 15:00 LT = 12:00 UTC. Planul trebuie depus cu 60 min înainte = cel târziu la 11:00 UTC."},{"id":122,"category":"Proceduri operaționale","question":"Dacă nu ați decolat în maxim 30 min de când planul de zbor a fost depus aveți obligația să:","answers":["cereți un delay (întârziere) la briefing","depuneți un alt plan de zbor","nu aveţi nici o obligație","informați TWR despre întârziere"],"correctIndex":0,"explanation":"Dacă nu ai decolat în 30 minute de la ora estimată în planul de zbor, ești obligat să ceri un DELAY (amânare) la biroul de informare aeronautică sau la ATC, sau să depui un nou plan."},{"id":123,"category":"Proceduri operaționale","question":"Calajul altimetric pe QFE permite cunoaşterea:","answers":["înălțimii ULM-ului deasupra locului unde a fost reglat","altitudinii ULM-ului deasupra nivelului mării","altitudinii ULM-ului deasupra locului unde a fost reglat","nivelului de zbor al ULM-ului"],"correctIndex":0,"explanation":"QFE pe altimetru → altimetrul indică ÎNĂLȚIMEA față de locul unde a fost reglat (de obicei aerodromul). La touchdown, altimetrul arată zero."},{"id":124,"category":"Proceduri operaționale","question":"Cum se execută apropierea pentru aterizarea pe un teren necunoscut?","answers":["Înainte de a executa apropierea finală se investighează suprafața solului și prezența obstacolelor \nîn zona de aterizare și se stabilește punctul virajului 4 (de axare) și punctul contactului cu solul","Cu viteză mare pentru a avea energie suficientă să executăm ratarea aterizării în cazul unui obstacol \nîn zona de aterizare","Pantă abruptă pentru a se asigura viteza de planare în eventualitatea unei pene de motor","Pantă abruptă de coborâre pentru a se asigura o vizibilitate bună și a putea observa eventualele \nobstacole"],"correctIndex":0,"explanation":"Aterizarea pe teren necunoscut: investigați mai întâi suprafața (obstacole, calitate sol, pantă) printr-un survol la altitudine joasă. Stabiliți punctul final al virajului 4 și punctul de contact înainte de a vă angaja în finală."},{"id":125,"category":"Proceduri operaționale","question":"Ce înseamnă abrevierea aeronautică FIS ?","answers":["Serviciul de Informare a Zborului","Flight Information Source","Regiunea de Informare a Zborului","Servicii pentru Zborul Instrumental"],"correctIndex":0,"explanation":"FIS = Flight Information Service (Serviciul de Informare a Zborului). Furnizează piloților informații meteorologice, NOTAM-uri, trafic, alte informații utile, fără să exercite control ATC."},{"id":126,"category":"Proceduri operaționale","question":"La depunerea unui plan de zbor pentru o aeronavă ultraușoară motorizată, la rubrica TYPE OF \nFLIGHT completăm :","answers":["G","N","M","S"],"correctIndex":0,"explanation":"Pentru aeronavele ultraușoare motorizate, tipul de zbor în planul de zbor se completează cu G = General Aviation (aviație generală). Codul M = militar, S = regulat, N = neregulat."},{"id":127,"category":"Proceduri operaționale","question":"Când vedeți pe un aerodrom un T, mare alb, înseamnă că :","answers":["Aterizați în dreapta T-ului","Aterizați în stânga T-ului","Aterizați astfel încât să vă opriți în dreapta T-ului","Aterizați pe T"],"correctIndex":0,"explanation":"T-ul alb (indicatorul de direcție de aterizare) se citește astfel: bara verticală (coada T-ului) indică direcția de aterizare — aeronava aterizează paralel cu T-ul, în sensul spre care arată bara verticală. Aeronava trece deasupra barei orizontale și aterizează în zona dinspre capătul deschis (capul T-ului). Conform răspunsului corect, aeronava aterizează în dreapta T-ului (T-ul rămâne în stânga pilotului pe pistă)."},{"id":128,"category":"Proceduri operaționale","question":"Cea mai puternică turbulență de siaj este cauzată de:","answers":["O aeronavă grea la viteză mică","O aeronavă ușoară la viteză mică","O aeronavă grea la viteză mare","O aeronavă ușoară la viteză mare"],"correctIndex":0,"explanation":"Turbulența de siaj este cea mai puternică la aeronavele GRELE la VITEZĂ MICĂ (la decolare/aterizare). La viteză mică, unghiul de atac este mare, portanța mare, deci vârtejurile de la capetele aripii sunt intense."},{"id":129,"category":"Proceduri operaționale","question":"În care secțiune din AIP România se găsesc informații referitoare la căile aeriene ?","answers":["ENR","GEN","AD","AGA"],"correctIndex":0,"explanation":"AIP ENR (En-route) conține informații despre rute aeriene, spații aeriene speciale, navajoande și proceduri de zbor en-route."},{"id":130,"category":"Proceduri operaționale","question":"Aterizarea preventivă este …","answers":["Aterizarea executată în încercarea de a se menține siguranța zborului","Aterizarea fără flaps","Aterizarea executată drept răspuns al unor circumstanțe care au făcut aterizarea în acel moment \nobligatorie","Aterizarea fără tracțiune (pană de motor)"],"correctIndex":0,"explanation":"Aterizarea PREVENTIVĂ (precautionary landing) se execută la inițiativa pilotului, preventiv, pentru a menține siguranța zborului (ex. combustibil scăzut, vreme în deteriorare), fără o urgență declarată."},{"id":131,"category":"Proceduri operaționale","question":"Care este, conform ICAO și reglementărilor naționale, definiția termenului „timp de zbor”?","answers":["Perioada de timp calculată de la începutul rulajului pe sol al aeronavei, cu intenția de decolare, \npână la întoarcerea acesteia la poziția de parcare, după aterizare","Perioada de timp calculată de la îmbarcarea pasagerilor până la debarcarea acestora","Perioada de timp calculată de la decolare până la aterizare","Perioada de timp calculată de la pornirea motorului până la oprirea acestuia"],"correctIndex":0,"explanation":"Conform ICAO Annex 1 (Licențierea personalului) și RACR-LPAN ULM, 'timpul de zbor' pentru aeronave include tot intervalul de la prima mișcare a aeronavei cu intenția de a decola până la oprirea finală după aterizare — incluzând rulajul. Aceasta este definiția oficială folosită pentru carnetul de zbor și cerințele de experiență de zbor. Atenție: în aviația comercială, acest interval se numește uneori 'timp bloc', dar în licențierea piloților (ICAO Annex 1) este definit ca 'timp de zbor'."},{"id":132,"category":"Proceduri operaționale","question":"Ce reprezintă abrevierea aeronautică NOTAM ?","answers":["Abreviere cu utilizare internațională ('Notice to Airmen') care semnifică un mesaj de notificare","Abreviere cu utilizare internațională ('Notice before AM') care cuprinde informațiile trimise înainte \nde prânz","Abreviere cu utilizare internațională ('Notice about meteo') despre o notă meteorologică","Abreviere cu utilizare internațională ('Notice about moisture') despre modificarea umezelii"],"correctIndex":0,"explanation":"NOTAM = Notice to Airmen (Notificare pentru Aviatori). Mesaj care conține informații urgente despre instalații de navigație, servicii, proceduri sau pericole care afectează operațiunile aeriene."},{"id":133,"category":"Proceduri operaționale","question":"Planul de zbor se depune cu _____ înainte de decolare.","answers":["60 minute","30 minute","45 minute","15 minute"],"correctIndex":0,"explanation":"Planul de zbor trebuie depus cu minimum 60 de minute înainte de ora estimată de decolare (EOBT). Aceasta permite ATC să proceseze și să coordoneze planul."},{"id":134,"category":"Proceduri operaționale","question":"La depunerea unui plan de zbor pentru o aeronavă ultraușoară motorizată, la rubrica aferentă \nclasei de siaj a aeronavei, completăm:","answers":["L","H","M","J"],"correctIndex":0,"explanation":"Clasa de siaj (wake turbulence category) pentru ULM: L = Light (ușor). Categoriile sunt: H (Heavy) >136t, M (Medium) 7-136t, L (Light) <7t."},{"id":137,"category":"Proceduri operaționale","question":"În cazul zborului VFR al aeronavelor ultraușoare motorizate, putem zbura între răsăritul și \napusul soarelui. Orele oficiale pentru apus și răsărit sunt publicate în:","answers":["AIP GEN","NOTAM","METAR","TAF"],"correctIndex":0,"explanation":"Orele oficiale de răsărit și apus ale soarelui sunt publicate în AIP GEN (Generalul din Publicația de Informare Aeronautică). Piloții VFR trebuie să zboare între răsărit și apus."},{"id":139,"category":"Proceduri operaționale","question":"Care este cel mai bun indicator pentru direcția vântului în timpul aterizării?","answers":["Mâneca de vânt","Viteza indicată de GPS","Fumul de la coșul unei case aflate la 1 km depărtare","Balonul ținut în mână de un copil care se află pe pista de aterizare"],"correctIndex":0,"explanation":"Cel mai bun indicator al direcției vântului pentru aterizare este MÂNECA DE VÂNT (wind sock/tetra) – arată direcția și forța aproximativă a vântului, montată pe aerodrom lângă pistă."},{"id":140,"category":"Principiile zborului","question":"Viteza de angajare a unei aeronave este proporțională cu:","answers":["Rădăcina factorului de sarcină","Pătratul greutății aeronavei","Pătratul factorului de sarcină","Rădăcina greutății aeronavei"],"correctIndex":0,"explanation":"Viteza de angajare VS este proporțională cu √n (rădăcina factorului de sarcină). VS_manevră = VS_1g × √n. La dublu factor de sarcină (viraj 60°), viteza de angajare crește cu √2."},{"id":141,"category":"Principiile zborului","question":"Menținând un unghi de atac constant și mărind viteza:","answers":["Portanța și rezistența la înaintare cresc","Portanța crește și rezistența scade","Portanța scade și rezistența crește","Portanța și rezistența scad"],"correctIndex":0,"explanation":"La unghi de atac constant și viteză crescută: portanța L = ½ρv²SCL crește (v² mai mare) și rezistența D = ½ρv²SCD crește de asemenea, ambele proporțional cu v²."},{"id":142,"category":"Principiile zborului","question":"Folosind unghiuri de bracaj mici (puțin coborât) ale flaps-ului la decolare:","answers":["Rulajul pe sol este mai mic","Rata de urcare inițială este mai mare","Unghiul de urcare este mai mare","Rulajul pe sol este mai mare"],"correctIndex":0,"explanation":"Flaps mic (unghi mic) la decolare: portanța crește puțin dar rezistența adăugată este mică. Rulajul pe sol este MAI SCURT (aeronava se ridică mai repede) dar rata de urcare inițială este bună."},{"id":143,"category":"Principiile zborului","question":"Viteza maximă la care bracarea (acționarea) totală a suprafețelor de comandă este posibilă fără \na supune structura aeronavei la forțe periculoase este cunoscută ca:","answers":["VA","VFE","VNE","VMD"],"correctIndex":0,"explanation":"VA (Viteza de manevră) = viteza maximă la care bracarea completă a suprafețelor de comandă este posibilă fără a supune structura la forțe periculoase. Sub VA, o rafală puternică sau bracaj complet nu supraîncarcă celula."},{"id":144,"category":"Principiile zborului","question":"Ce efect va avea bracarea (coborârea) flaps-ului asupra unghiului de atac ?","answers":["Scade unghiul de atac","Mărește sau scade unghiul de atac în funcție de viteza aeronavei","Nu are efecte asupra unghiului de atac","Mărește unghiul de atac"],"correctIndex":0,"explanation":"Bracarea flapsului (coborârea lui) crește curbura profilului și astfel SCADE unghiul de atac necesar pentru a genera aceeași portanță, la aceeași viteză. Efectiv: aeronava zboara cu nas mai jos."},{"id":145,"category":"Principiile zborului","question":"În condiții ideale, distanța maximă care poate fi planată va fi obținută prin zborul la ce viteză?","answers":["Viteza care oferă cea mai mică rezistență la înaintare","Viteza care oferă cea mai mare rezistență la înaintare","Viteza care oferă cea mai mare tracțiune","Viteza de angajare"],"correctIndex":0,"explanation":"Planarea maximă se obține la viteza corespunzătoare REZISTENȚEI MINIME la înaintare (raportul portanță/rezistență maxim = L/Dmax). La această viteză, finețea (glide ratio) este maximă."},{"id":146,"category":"Principiile zborului","question":"Forța produsă de grupul motor-elice se numește:","answers":["Tracțiune","Greutate","Portanță","Rezistență la înaintare"],"correctIndex":0,"explanation":"Tracțiunea = forța generată de grupul motor-elice în direcția de zbor. Tracțiunea egalează rezistența în zbor orizontal neaccelerat."},{"id":147,"category":"Principiile zborului","question":"În ce atitudine de zbor trebuie să se afle o aeronavă pentru a intra în vrie ?","answers":["Aripile trebuie să fie angajate","Într-o spirală în coborâre abruptă","Aripile parțial angajate","În zbor acrobatic"],"correctIndex":0,"explanation":"Vria = coborâre în spirală cu aripi angajate și rotație. Condiția pentru intrarea în vrie: AMBELE ARIPI trebuie să fie angajate (sau una mai mult angajată, când cealaltă poate încă genera portanță)."},{"id":148,"category":"Principiile zborului","question":"Apropierea de unghiul de incidență critic se manifestă prin:","answers":["Trepidații caracteristice","Necesitatea de a crește efortul pentru acționarea suprafețelor de comandă","Intrarea în vrie","Necesitatea de a cupla pompa auxiliară de combustibil"],"correctIndex":0,"explanation":"Apropierea de unghiul critic de atac se manifestă prin TREPIDAȚII (buffeting) caracteristice, generate de turbulența extradosului aripii care lovește ampenajul orizontal. Este avertismentul prealabil al angajării."},{"id":149,"category":"Principiile zborului","question":"Dacă greutatea aeronavei în zbor orizontal este de 450 kg, atunci la ce greutate va fi supusă \nstructura aeronavei într-un viraj cu înclinare de 60 de grade la orizontală?","answers":["900 kg","800 kg","450 kg","600 kg"],"correctIndex":0,"explanation":"La viraj cu înclinare 60°: factorul de sarcină n = 1/cos(60°) = 1/0,5 = 2. Sarcina pe structură = 450 kg × 2 = 900 kg."},{"id":150,"category":"Principiile zborului","question":"În zbor orizontal echilibrat, dacă centrul de presiune se află în spatele centrului de greutate, \neste generată o atitudine cu botul ....(i).... , fiind necesar ca ampenajul orizontal să producă o \nforță orientată în ....(ii)....","answers":["i) jos ii) jos","i) jos ii) sus","i) sus ii) jos","i) sus ii) sus"],"correctIndex":0,"explanation":"Centrul de presiune în spatele centrului de greutate → momentul de tangaj este cu botul JOS. Pentru echilibru, ampenajul orizontal trebuie să genereze o forță orientată tot ÎN JOS (forță descendentă pe coadă)."},{"id":152,"category":"Principiile zborului","question":"Fileurile de aer curg pe o aripă dreptunghiulară în așa fel încât:","answers":["Angajarea să aibă loc începând de la încastrarea în fuselaj a aripii","Angajarea să aibă loc uniform pe toată suprafața aripii","Angajarea să aibă loc începând de la capătul aripii","Să micșoreze eficacitatea eleroanelor"],"correctIndex":0,"explanation":"Pe o aripă dreptunghiulară, angajarea (stall) începe la RĂDĂCINA ARIPII (încastrare fuselaj) și progresează spre capete. Aceasta permite eleroanelor (situate la capete) să rămână eficace la incipient angajare."},{"id":153,"category":"Principiile zborului","question":"Unghiul de incidență al profilului este unghiul format de:","answers":["coarda profilului şi direcția vântului relativ","intradosul şi extradosul bordului de fugă","coarda profilului cu axa triciclului","coarda profilului și linia orizontului"],"correctIndex":0,"explanation":"În terminologia utilizată în cursurile românești de ULM, 'unghiul de incidență al profilului' desemnează unghiul dintre COARDA PROFILULUI și DIRECȚIA VÂNTULUI RELATIV — echivalentul englezescului 'angle of attack'. Acesta este unghiul variabil în zbor, diferit de 'unghiul de calaj' (unghi fix, structural, între coardă și axa longitudinală a aeronavei). Cu cât unghiul de incidență crește, cu atât portanța crește — până la unghiul critic, după care aeronava se angajează."},{"id":155,"category":"Principiile zborului","question":"Cuplul motor se corectează:","answers":["din comenzi","din seletă","din chingile portsuspante","prin pilotarea la viteză mică, cu regim mare al motorului"],"correctIndex":0,"explanation":"Cuplul motor al motoparapantei se corectează din comenzi (frânele aripii). Pilotul acționează frâna din sensul opus cuplului pentru a menține zborul drept."},{"id":156,"category":"Principiile zborului","question":"Virajele sunt mai ușor de realizat:","answers":["în sensul cuplului motor","în sensul opus cuplului motor","cu ochii închiși","noaptea"],"correctIndex":0,"explanation":"Virajele sunt mai ușor de realizat în SENSUL CUPLULUI MOTOR (de exemplu, dacă elicea se rotește la stânga, cuplul întoarce aparatul la stânga). Virajul în sensul cuplului necesită mai puțin efort de la pilot."},{"id":157,"category":"Principiile zborului","question":"Intradosul aripii este partea:","answers":["de dedesubt a profilului aripii","din faţă a profilului aripii","din spatele profilului aripii","de deasupra a profilului aripii"],"correctIndex":0,"explanation":"Intradosul (lower surface) = suprafața INFERIOARĂ (de dedesubt) a profilului aripii. Extradosul = suprafața superioară. Între extrados (presiune mică) și intrados (presiune mare) se generează portanța."},{"id":158,"category":"Principiile zborului","question":"Angajarea unei aripi corespunde cel mai direct cu:","answers":["Unghiul de atac","Viteza față de sol","Viteza față de aer","Poziția manetei de gaz"],"correctIndex":0,"explanation":"Angajarea (stall) corespunde direct cu UNGHIUL DE ATAC. Angajarea are loc când unghiul de atac depășește valoarea critică, indiferent de viteza absolută sau de atitudinea aeronavei."},{"id":159,"category":"Principiile zborului","question":"Redresarea (frânarea aerodinamică) la aterizare:","answers":["restituie energia potențială și o transformă în energie cinetică","este foarte utila pe vânt puternic","este mai eficace la viteza mică","este opțională și nu este recomandată pentru o aterizare în siguranță"],"correctIndex":0,"explanation":"Redresarea (flare) la aterizare folosește energia cinetică acumulată în cursă (viteza aeronavei) pentru a genera portanță și rezistență suplimentare: pilotul trage de manșă → unghiul de atac crește → portanța crește → aeronava 'plutește' și decelerează. Energia cinetică (viteza) scade, convertindu-se în lucru aerodinamic. Aceasta permite o aterizare lentă și controlată. Redresarea NU este opțională — este esențială pentru o aterizare în siguranță."},{"id":160,"category":"Comunicații","question":"Planul de zbor trebuie depus la biroul de informare aeronautică înainte de ora de decolare \ncu .......... de minute:","answers":["60 de minute","30 de minute","Nu există prevederi în acest sens","120 de minute"],"correctIndex":0,"explanation":"Planul de zbor trebuie depus la biroul de informare aeronautică (ARO – Aeronautical Reporting Office / briefing) cu minimum 60 de minute înainte de ora de decolare estimată."},{"id":161,"category":"Comunicații","question":"Frecvența aeronautică internațională de urgență este:","answers":["121.5 MHz","125.1 MHz","122.5 kHz","121.5 kHz"],"correctIndex":0,"explanation":"Frecvența internațională de urgență aeronautică VHF = 121,5 MHz. Toate aeronavele în zbor și stațiile de căutare-salvare monitorizează în permanență această frecvență."},{"id":162,"category":"Comunicații","question":"În spațiul aerian de Clasa A sunt premise:","answers":["doar zboruri IFR și se furnizează serviciul de control al traficului aerian","doar zboruri VFR și se furnizează serviciul de control al traficului aerian","zboruri IFR și VFR și se furnizează serviciul de informare al traficului aerian","zboruri IFR și VFR și se furnizează serviciul de control al traficului aerian"],"correctIndex":0,"explanation":"Spațiul aerian de clasă A permite EXCLUSIV zbor IFR. Toate aeronavele sunt sub control ATC, separate între ele. Zborul VFR în clasă A nu este permis."},{"id":163,"category":"Comunicații","question":"Folosind alfabetul fonetic ICAO, literele E, X și B se pronunță astfel:","answers":["Echo, X-ray, Bravo","Echo, X-mas, Baboon","Easy, Xenon, Baby","Engage , Xerox, Baccalaureate"],"correctIndex":0,"explanation":"Alfabetul fonetic ICAO: E = Echo, X = X-ray, B = Bravo. Standardizat la nivel mondial pentru comunicații radio clare."},{"id":164,"category":"Comunicații","question":"O unitate ATC transmite următoarea informare către un pilot care zboară pe direcția 360 grade: \n\"TRAFIC LA ORA 10, 2 MILE, CU DIRECȚIA SUD\" \nÎn ce direcție ar trebui să se uite pilotul pentru a vedea traficul respectiv ?","answers":["Nord-Vest","Nord-Est","Sud-Vest","Sud-Est"],"correctIndex":0,"explanation":"Pilotul zboară la 360° (nord). Ora 10 = 10 ore fix pe cadranul ceasornicului față de direcția de zbor = 360° - 60° = 300° (nord-vest). Pilotul trebuie să se uite la NORD-VEST pentru a vedea traficul."},{"id":165,"category":"Comunicații","question":"Frecvența radio a TWR de la LRCN este ?","answers":["128.305 MHz","111.20 MHz","140.30 MHz","138.305 MHz"],"correctIndex":0,"explanation":"Frecvența TWR de la LRCN (Aeroportul Craiova) = 128,305 MHz. Aceasta este frecvența oficială de control de aerodrom publicată în AIP AD."},{"id":166,"category":"Comunicații","question":"Cum se numește procedura de repetare a indicațiilor importante transmise de un conducător de \nzbor ?","answers":["Read-back","Feed-back","Back-track","Hear-back"],"correctIndex":0,"explanation":"Read-back = procedura prin care pilotul REPETĂ instrucțiunile importante primite de la controlorul de trafic aerian (clearance-uri, instrucțiuni de nivel, cap, frecvență). Confirmă că mesajul a fost corect recepționat și înțeles."},{"id":167,"category":"Comunicații","question":"Care este frecvența utilizată în primă instanță pentru a transmite un mesaj MAYDAY?","answers":["Frecvența civilă sau militară utilizată la momentul respectiv","121.5 MHz","Cel mai apropiat TWR","Oricare frecvență locală de urgență"],"correctIndex":0,"explanation":"MAYDAY se transmite în PRIMUL RÂND pe frecvența civilă sau militară utilizată la momentul respectiv. Dacă nu se obține răspuns, se încearcă 121,5 MHz (frecvența internațională de urgență)."},{"id":168,"category":"Comunicații","question":"Un raport de poziție transmis de aeronavă trebuie să conțină:","answers":["apelul către stație, identitatea aeronavei, poziția, ora survolării punctului, altitudinea, poziția \nviitoare și ora estimată pentru survol al următorului punct","indicativul aeronavei și numele pilotului","apelul către stație, identitatea aeronavei și poziția viitoare","apelul către stație, poziția actuală și poziția viitoare"],"correctIndex":0,"explanation":"Un raport de poziție complet include: apelul stației, identitatea aeronavei, poziția actuală, ora survolului punctului, altitudinea, poziția viitoare și ora estimată pentru survolul următor punct."},{"id":169,"category":"Comunicații","question":"Pentru a transmite în mod A, un transponder trebuie setat pe poziția:","answers":["ON","TST","STANDBY","ALT"],"correctIndex":0,"explanation":"Transponderul în mod A transmite NUMAI codul de identificare (4 cifre octal). Mod C adaugă altitudinea. Mod S adaugă date extinse. Mod A se activează selectând poziția ON."},{"id":170,"category":"Comunicații","question":"Care este ecartul între frecvențele consecutive din banda de frecvențe VHF ?","answers":["8.33 kHz","25 MHz","25 kHz","8.33 MHz"],"correctIndex":0,"explanation":"Ecartul (canalul) minim între frecvențele VHF aeronautice = 8,33 kHz (de la 118 la 137 MHz). Anterior era 25 kHz; trecerea la 8,33 kHz a triplat numărul de canale disponibile."}];
+
+const CATEGORIES = [...new Set(QUESTIONS.map(q => q.category))];
+
+// ═══════════════════════════════ STORAGE ═══════════════════════════════
+function getStats() {
+  try { return JSON.parse(localStorage.getItem('ulm_stats') || '{}'); } catch { return {}; }
+}
+function saveStats(s) { localStorage.setItem('ulm_stats', JSON.stringify(s)); }
+function getMistakes() {
+  try { return JSON.parse(localStorage.getItem('ulm_mistakes') || '{}'); } catch { return {}; }
+}
+function saveMistakes(m) { localStorage.setItem('ulm_mistakes', JSON.stringify(m)); }
+function recordAnswer(id, correct) {
+  const m = getMistakes();
+  if (!correct) m[id] = (m[id] || 0) + 1;
+  else delete m[id];
+  saveMistakes(m);
+}
+
+// ═══════════════════════════════ ROUTING ═══════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function goHome() {
+  showScreen('home');
+  refreshHome();
+}
+function refreshHome() {
+  document.getElementById('stat-total').textContent = QUESTIONS.length;
+  document.getElementById('stat-cats').textContent = CATEGORIES.length;
+  const stats = getStats();
+  document.getElementById('stat-tests').textContent = stats.testsCompleted || 0;
+  document.getElementById('stat-best').textContent = stats.bestScore ? stats.bestScore + '%' : '—';
+  const mc = Object.keys(getMistakes()).length;
+  document.getElementById('mistakes-desc').textContent = mc + ' de reiterat';
+}
+
+// ═══════════════════════════════ STUDY ═══════════════════════════════
+let studyCat = null, studyQs = [], studyIdx = 0, studySelected = null, studyConfirmed = false;
+const LETTERS = ['A','B','C','D'];
+
+function showStudy() {
+  showScreen('study');
+  document.getElementById('study-header-title').textContent = 'Studiu';
+  renderStudyCatList();
+}
+function renderStudyCatList() {
+  document.getElementById('study-question-view').style.display = 'none';
+  const list = document.getElementById('study-cat-list');
+  list.style.display = '';
+  list.innerHTML = '<div class="section-title">Alege o categorie</div>';
+  CATEGORIES.forEach(cat => {
+    const count = QUESTIONS.filter(q => q.category === cat).length;
+    const div = document.createElement('div');
+    div.className = 'cat-card';
+    div.innerHTML = '<span class="cat-name">' + esc(cat) + '</span><span class="cat-count">' + count + ' întrebări →</span>';
+    div.onclick = () => startStudy(cat);
+    list.appendChild(div);
+  });
+}
+function startStudy(cat) {
+  studyCat = cat;
+  studyQs = QUESTIONS.filter(q => q.category === cat);
+  studyIdx = 0;
+  studySelected = null;
+  studyConfirmed = false;
+  document.getElementById('study-cat-list').style.display = 'none';
+  document.getElementById('study-question-view').style.display = '';
+  document.getElementById('study-header-title').textContent = cat;
+  renderStudyQuestion();
+}
+function renderStudyQuestion() {
+  const q = studyQs[studyIdx];
+  const pct = ((studyIdx + 1) / studyQs.length * 100).toFixed(1);
+  document.getElementById('study-progress').style.width = pct + '%';
+  document.getElementById('study-progress-text').textContent = (studyIdx+1) + ' / ' + studyQs.length;
+  document.getElementById('study-cat-chip').textContent = q.category;
+  document.getElementById('study-question').textContent = q.question;
+  document.getElementById('study-explanation').style.display = 'none';
+  document.getElementById('study-prev').disabled = studyIdx === 0;
+  document.getElementById('study-next').disabled = studyIdx === studyQs.length - 1;
+  studySelected = null; studyConfirmed = false;
+  const cont = document.getElementById('study-answers');
+  cont.innerHTML = '';
+  q.answers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.innerHTML = '<span class="answer-letter">' + LETTERS[i] + '</span><span class="answer-text">' + esc(ans) + '</span>';
+    btn.onclick = () => studyAnswer(i);
+    cont.appendChild(btn);
+  });
+}
+function studyAnswer(idx) {
+  if (studyConfirmed) return;
+  studySelected = idx;
+  studyConfirmed = true;
+  const q = studyQs[studyIdx];
+  const btns = document.getElementById('study-answers').querySelectorAll('.answer-btn');
+  btns.forEach((btn, i) => {
+    if (i === q.correctIndex) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('wrong');
+    btn.disabled = true;
+  });
+  document.getElementById('study-explanation-text').textContent = q.explanation;
+  document.getElementById('study-explanation').style.display = '';
+  recordAnswer(q.id, idx === q.correctIndex);
+}
+function studyNav(dir) {
+  studyIdx = Math.max(0, Math.min(studyQs.length - 1, studyIdx + dir));
+  renderStudyQuestion();
+}
+
+// ═══════════════════════════════ TEST ═══════════════════════════════
+let testQs = [], testIdx = 0, testAnswers = {}, testSelected = null, testConfirmed = false;
+
+function showTest() {
+  testQs = shuffle([...QUESTIONS]).slice(0, 30);
+  testIdx = 0; testAnswers = {}; testSelected = null; testConfirmed = false;
+  showScreen('test');
+  renderTestQuestion();
+}
+function renderTestQuestion() {
+  const q = testQs[testIdx];
+  const pct = ((testIdx + 1) / testQs.length * 100).toFixed(1);
+  document.getElementById('test-progress').style.width = pct + '%';
+  document.getElementById('test-progress-text').textContent = (testIdx+1) + ' / ' + testQs.length;
+  document.getElementById('test-answered-badge').textContent = 'Răspunse: ' + Object.keys(testAnswers).length;
+  document.getElementById('test-cat-chip').textContent = q.category;
+  document.getElementById('test-question').textContent = q.question;
+  const saved = testAnswers[testIdx];
+  // Restore saved state only when navigating between questions (not on answer click)
+  if (saved !== undefined || testConfirmed) {
+    testSelected = saved ? saved.selected : null;
+    testConfirmed = !!saved;
+  }
+  document.getElementById('test-confirm-btn').style.display = testConfirmed ? 'none' : '';
+  document.getElementById('test-next-btn').style.display = testConfirmed ? '' : 'none';
+  document.getElementById('test-confirm-btn').disabled = testSelected === null;
+  document.getElementById('test-next-btn').textContent = testIdx < testQs.length - 1 ? 'Întrebarea următoare →' : 'Vezi rezultatul →';
+  document.getElementById('test-prev-btn').disabled = testIdx === 0;
+  const cont = document.getElementById('test-answers');
+  cont.innerHTML = '';
+  q.answers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    if (testConfirmed) {
+      if (i === q.correctIndex) btn.classList.add('correct');
+      else if (i === testSelected) btn.classList.add('wrong');
+      btn.disabled = true;
+    } else if (testSelected === i) btn.classList.add('selected');
+    btn.innerHTML = '<span class="answer-letter">' + LETTERS[i] + '</span><span class="answer-text">' + esc(ans) + '</span>';
+    btn.onclick = () => {
+      if (testConfirmed) return;
+      testSelected = i;
+      // Update button styles without re-rendering entire question
+      cont.querySelectorAll('.answer-btn').forEach((b, j) => {
+        b.classList.toggle('selected', j === i);
+      });
+      document.getElementById('test-confirm-btn').disabled = false;
+    };
+    cont.appendChild(btn);
+  });
+  renderTestDots();
+}
+function renderTestDots() {
+  const cont = document.getElementById('test-dots');
+  cont.innerHTML = '';
+  testQs.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === testIdx ? ' active' : testAnswers[i] ? (testAnswers[i].correct ? ' ok' : ' fail') : '');
+    cont.appendChild(dot);
+  });
+}
+function testConfirm() {
+  if (testSelected === null || testConfirmed) return;
+  testConfirmed = true;
+  const q = testQs[testIdx];
+  testAnswers[testIdx] = { selected: testSelected, correct: testSelected === q.correctIndex };
+  recordAnswer(q.id, testSelected === q.correctIndex);
+  renderTestQuestion();
+}
+function testNext() {
+  if (testIdx < testQs.length - 1) { testIdx++; renderTestQuestion(); }
+  else showTestResult();
+}
+function testNavPrev() { if (testIdx > 0) { testIdx--; renderTestQuestion(); } }
+function confirmAbortTest() {
+  if (confirm('Ieși din test? Progresul se pierde.')) goHome();
+}
+function showTestResult() {
+  const correct = Object.values(testAnswers).filter(a => a.correct).length;
+  const total = testQs.length;
+  const pct = Math.round(correct / total * 100);
+  const passed = pct >= 75;
+  const stats = getStats();
+  stats.testsCompleted = (stats.testsCompleted || 0) + 1;
+  stats.bestScore = Math.max(stats.bestScore || 0, pct);
+  saveStats(stats);
+  showScreen('result');
+  document.getElementById('score-emoji').textContent = passed ? '🎉' : '😔';
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-badge').textContent = passed ? 'PROMOVAT' : 'NEPROMOVAT';
+  document.getElementById('score-detail').textContent = correct + ' / ' + total + ' răspunsuri corecte';
+  document.getElementById('score-card').style.background = passed ? 'var(--green)' : 'var(--red)';
+  const wrongCount = total - correct;
+  document.getElementById('wrong-section-title').textContent = wrongCount > 0 ? 'Răspunsuri incorecte (' + wrongCount + ')' : '';
+  const list = document.getElementById('wrong-list');
+  list.innerHTML = '';
+  testQs.forEach((q, i) => {
+    const ans = testAnswers[i];
+    if (!ans || ans.correct) return;
+    const div = document.createElement('div');
+    div.className = 'wrong-card';
+    div.innerHTML = '<div class="wrong-q">' + (i+1) + '. ' + esc(q.question) + '</div>' +
+      '<div class="wrong-label" style="color:var(--red)">✗ Răspuns ales:</div>' +
+      '<div class="wrong-ans">' + esc(q.answers[ans.selected]) + '</div>' +
+      '<div class="wrong-label" style="color:var(--green)">✓ Corect:</div>' +
+      '<div class="correct-ans">' + esc(q.answers[q.correctIndex]) + '</div>' +
+      '<div class="expl-small">' + esc(q.explanation) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════ FLASHCARDS ═══════════════════════════════
+let flashQs = [], flashRemaining = [], flashKnown = new Set(), flashFlipped = false;
+
+function showFlashcards() {
+  showScreen('flash');
+  document.getElementById('flash-header-title').textContent = 'Flashcards';
+  renderFlashCatList();
+}
+function renderFlashCatList() {
+  document.getElementById('flash-play').style.display = 'none';
+  document.getElementById('flash-done').style.display = 'none';
+  const list = document.getElementById('flash-cat-list');
+  list.style.display = '';
+  list.innerHTML = '<div class="section-title">Alege o categorie</div>';
+  // All
+  const all = document.createElement('div');
+  all.className = 'cat-card cat-all';
+  all.innerHTML = '<span class="cat-name">Toate categoriile</span><span class="cat-count">' + QUESTIONS.length + ' cărți →</span>';
+  all.onclick = () => startFlash(null);
+  list.appendChild(all);
+  CATEGORIES.forEach(cat => {
+    const count = QUESTIONS.filter(q => q.category === cat).length;
+    const div = document.createElement('div');
+    div.className = 'cat-card';
+    div.innerHTML = '<span class="cat-name">' + esc(cat) + '</span><span class="cat-count">' + count + ' cărți →</span>';
+    div.onclick = () => startFlash(cat);
+    list.appendChild(div);
+  });
+}
+function startFlash(cat) {
+  flashQs = cat ? QUESTIONS.filter(q => q.category === cat) : QUESTIONS;
+  flashRemaining = shuffle([...flashQs]);
+  flashKnown = new Set();
+  flashFlipped = false;
+  document.getElementById('flash-cat-list').style.display = 'none';
+  document.getElementById('flash-done').style.display = 'none';
+  document.getElementById('flash-play').style.display = '';
+  renderFlashCard();
+}
+function renderFlashCard() {
+  if (flashRemaining.length === 0) {
+    document.getElementById('flash-play').style.display = 'none';
+    document.getElementById('flash-done').style.display = '';
+    document.getElementById('flash-done-sub').textContent = flashKnown.size + ' cărți știute';
+    return;
+  }
+  const q = flashRemaining[0];
+  flashFlipped = false;
+  document.getElementById('flash-actions').style.display = 'none';
+  document.getElementById('flash-counter').textContent = flashRemaining.length + ' rămase · ' + flashKnown.size + ' știute';
+  const card = document.getElementById('flashcard');
+  card.innerHTML = '<div class="flashcard-hint">❓ Întrebare · click/tap pentru răspuns</div>' +
+    '<div class="flashcard-cat">' + esc(q.category) + '</div>' +
+    '<div class="flashcard-text">' + esc(q.question) + '</div>';
+}
+function flipCard() {
+  if (flashRemaining.length === 0) return;
+  const q = flashRemaining[0];
+  if (!flashFlipped) {
+    flashFlipped = true;
+    document.getElementById('flashcard').innerHTML =
+      '<div class="flashcard-hint" style="color:var(--green)">✅ Răspuns corect</div>' +
+      '<div class="flashcard-answer">' + esc(q.answers[q.correctIndex]) + '</div>' +
+      '<div class="flashcard-expl">' + esc(q.explanation) + '</div>';
+    document.getElementById('flash-actions').style.display = '';
+  }
+}
+function flashRepeat() {
+  const q = flashRemaining.shift();
+  flashRemaining.push(q);
+  renderFlashCard();
+}
+function flashKnow() {
+  const q = flashRemaining.shift();
+  flashKnown.add(q.id);
+  renderFlashCard();
+}
+function flashReset() {
+  flashRemaining = shuffle([...flashQs]);
+  flashKnown = new Set();
+  document.getElementById('flash-done').style.display = 'none';
+  document.getElementById('flash-play').style.display = '';
+  renderFlashCard();
+}
+function flashBack() {
+  const playVisible = document.getElementById('flash-play').style.display !== 'none';
+  const doneVisible = document.getElementById('flash-done').style.display !== 'none';
+  if (playVisible || doneVisible) {
+    // eram în joc → înapoi la lista de categorii
+    document.getElementById('flash-play').style.display = 'none';
+    document.getElementById('flash-done').style.display = 'none';
+    renderFlashCatList();
+  } else {
+    // eram pe lista de categorii → înapoi acasă
+    goHome();
+  }
+}
+
+// ═══════════════════════════════ MISTAKES ═══════════════════════════════
+let mistakeQs = [], mistakeIdx = 0, mistakeConfirmed = false;
+
+function showMistakes() {
+  showScreen('mistakes');
+  loadMistakesScreen();
+}
+function loadMistakesScreen() {
+  const m = getMistakes();
+  const ids = Object.keys(m).map(Number);
+  mistakeQs = QUESTIONS.filter(q => ids.includes(q.id));
+  mistakeIdx = 0; mistakeConfirmed = false;
+  if (mistakeQs.length === 0) {
+    document.getElementById('mistakes-empty').style.display = '';
+    document.getElementById('mistakes-view').style.display = 'none';
+  } else {
+    document.getElementById('mistakes-empty').style.display = 'none';
+    document.getElementById('mistakes-view').style.display = '';
+    renderMistakeQuestion();
+  }
+}
+function renderMistakeQuestion() {
+  const q = mistakeQs[mistakeIdx];
+  const pct = ((mistakeIdx + 1) / mistakeQs.length * 100).toFixed(1);
+  document.getElementById('mistakes-progress').style.width = pct + '%';
+  document.getElementById('mistakes-progress-text').textContent = (mistakeIdx+1) + ' / ' + mistakeQs.length;
+  document.getElementById('mistakes-cat-chip').textContent = q.category;
+  document.getElementById('mistakes-question').textContent = q.question;
+  document.getElementById('mistakes-explanation').style.display = 'none';
+  document.getElementById('mistakes-next-btn').style.display = 'none';
+  mistakeConfirmed = false;
+  const cont = document.getElementById('mistakes-answers');
+  cont.innerHTML = '';
+  q.answers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.innerHTML = '<span class="answer-letter">' + LETTERS[i] + '</span><span class="answer-text">' + esc(ans) + '</span>';
+    btn.onclick = () => mistakeAnswer(i);
+    cont.appendChild(btn);
+  });
+}
+function mistakeAnswer(idx) {
+  if (mistakeConfirmed) return;
+  mistakeConfirmed = true;
+  const q = mistakeQs[mistakeIdx];
+  const btns = document.getElementById('mistakes-answers').querySelectorAll('.answer-btn');
+  btns.forEach((btn, i) => {
+    if (i === q.correctIndex) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('wrong');
+    btn.disabled = true;
+  });
+  document.getElementById('mistakes-explanation-text').textContent = q.explanation;
+  document.getElementById('mistakes-explanation').style.display = '';
+  document.getElementById('mistakes-next-btn').style.display = '';
+  const isLast = mistakeIdx === mistakeQs.length - 1;
+  document.getElementById('mistakes-next-btn').textContent = isLast ? '🔄 Reîncarcă lista' : 'Următoarea →';
+  recordAnswer(q.id, idx === q.correctIndex);
+}
+function mistakesNext() {
+  if (mistakeIdx < mistakeQs.length - 1) {
+    mistakeIdx++;
+    renderMistakeQuestion();
+  } else {
+    loadMistakesScreen();
+  }
+}
+function clearMistakesConfirm() {
+  if (confirm('Ștergi toate greșelile înregistrate?')) {
+    saveMistakes({});
+    loadMistakesScreen();
+  }
+}
+
+// ═══════════════════════════════ UTILS ═══════════════════════════════
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════ INIT ═══════════════════════════════
+refreshHome();
+</script>
+</body>
+</html>
